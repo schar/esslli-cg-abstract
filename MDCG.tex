@@ -1,0 +1,111 @@
+%\begin{pre}
+\documentclass[10pt]{sp_2000}
+\usepackage{amsmath,mathtools,newtxtext,newtxmath,expex,natbib,tikz-qtree,bookmark,tree-dvips}%
+\lingset{exskip=.5em}
+\newcommand{\posscite}[1]{\citeauthor{#1}'s \citeyear{#1}}
+\usepackage[normalem]{ulem}
+\newcommand{\ra}{\ensuremath{\rightarrow}} 
+\newcommand{\bsf}[1]{\textbf{\textsf{#1}}}
+\newcommand{\ceq}{\ensuremath{\coloneqq}}
+\newcommand{\ab}[1]{\ensuremath{\langle #1 \rangle}}
+\newcommand{\foc}[1]{\ensuremath{\textsc{#1}_{\textsc{f}}}}
+\newcommand{\rex}[1]{(\ref{#1})}
+\usepackage{combelow}
+\newcommand*\phantomas[3][c]{%
+\ifmmode
+\makebox[\widthof{$#2$}][#1]{$#3$}%
+\else
+\makebox[\widthof{#2}][#1]{#3}%
+\fi
+}
+\bibliographystyle{sp-new}
+\author[D.~Bumford \& S.~Charlow]{\spauthor{Dylan Bumford \\ \institute{NYU}} \AND
+  \spauthor{Simon Charlow \\ \institute{Rutgers}} \AND
+}
+\title{Monadic dynamic semantics}
+\delimitershortfall=-1pt
+%\end{pre}
+
+\begin{document}
+%\maketitle
+
+\section{Overview}
+\begin{itemize}	
+	\item Any side effects regime can be grafted onto a continuized CCG. Give a general technique for accomplishing this, relate it to the ContT monad transformer (\citealt{Liangetal}).%
+	
+	\item Yields two combinators. Type-theoretic way to track effects (\citealt{Shan:2005}).%
+	
+	\item Dynamic semantics is (\citealt{Shan:2001}):\footnote{NB: does not characterize all varieties of dynamic semantics. Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.}%
+	\begin{itemize}
+		\item State: ability to manipulate the discourse context, i.e.~create discourse referents.%
+		\item Nondeterminism: indefinites are 
+	\end{itemize}
+	
+	\item No need to settle on ``the'' grammar. Functional application can live in its bones, and side effects can be grafted on, modularly. Lexical entries that would from a more flat-footed perspective seem completely incongruous can play together nicely. %
+	
+	\item The perspective \citealt{Barker:2002, ShanBarker:2006, BarkerShan:2014} is in a sense an instantiation of this general perspective, where the underlying monad is the \textsf{Identity} monad.%
+	
+	\item Monads as a natural way to extend a continuations-based grammar with tools for dynamic binding and exceptional scope. In the end: you have functional application, plus the functors from whichever monads are implicated in a given language. %
+	
+	\item Other techniques (DPL, DMG) not reducible to monads.
+\end{itemize}
+
+\section{Adding side effects to $\kappa$}
+\begin{itemize}
+	\item Normal continuized grammar:
+	\begin{itemize}
+		\item Lift
+		\item Lower
+		\item Continuized functional application
+	\end{itemize}
+
+	\item Adding side effects (\citealt{Wadler:1994, Wadler:1995, Shan:2002}): 
+	\begin{itemize}
+		\item Replace Lift with $\star$
+		\item Replace Lower with $\eta$
+		\item Keep continuized functional application
+	\end{itemize}
+
+	\item Two type constructors:
+	\begin{itemize}
+		\item Bipartite Cont: 
+		\item Unary Monadic: 
+	\end{itemize}
+	
+\end{itemize}
+
+
+\section{Finding the dynamic monad}
+
+\begin{itemize}
+	
+	\item A PLA-style system.
+	
+	\item Monad for state
+	
+	\item Monad for nondeterminism
+	
+	\item Use StateT to stitch the two together
+
+	\item Static lexicon, dynamic lexicon
+	
+	\item Examples
+	
+	\item Interesting properties: no dynamic conjunction, completely standard model theory (cf.~\citealt{Groote:2006}). %
+	
+	\item Binding, totally modularized
+	\begin{itemize}
+		\item BarkerShan:
+		\item $\rhd$
+	\end{itemize}
+	
+\end{itemize}
+
+\section{}
+
+\citealt{Groote:2001}
+\citealt{Charlow:diss}
+
+{\small\bibliography{diss}}
+
+\end{document}
