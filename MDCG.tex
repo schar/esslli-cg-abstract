@@ -1,7 +1,10 @@
 %\begin{pre}
 \documentclass[10pt,twocolumn]{bqhatevwr}
-\usepackage{amsmath,mathtools,newtxtext,newtxmath,expex,natbib,tikz-qtree,bookmark,tree-dvips}%
+\usepackage{etex,amsmath,mathtools,newtxtext,newtxmath,expex,natbib,tikz-qtree,bookmark,tree-dvips}%
 \usepackage[margin=1in]{geometry}
+\usepackage{bussproofs}\EnableBpAbbreviations
+\newcommand{\pruf}[1]{\def\ScoreOverhang{0pt}\def\defaultHypSeparation{\hskip .25em}#1\DisplayProof}%
+\newcommand{\lab}[1]{\RightLabel{\footnotesize #1}}
 \usepackage{enumitem}
 \setlist[itemize]{leftmargin=12pt}
 \lingset{exskip=.5em}
@@ -43,6 +46,7 @@
 \end{itemize}
 
 \section{Adding side effects to $k$}
+
 \begin{itemize}
 	\item Standard continuized grammar:
 	\begin{itemize}
@@ -50,7 +54,109 @@
 		\item \bsf{triv}: $\lambda x.\,x$
 		\item \bsf{scope}: $\lambda k.\,m\,(\lambda f.\,n\,(\lambda x.\,k\,(f\,x)))$%
 	\end{itemize}
-
+	
+	\item To do: insert figure with inference rules.
+	\begin{figure*}
+		{\small\[\begin{array}{c}
+		\begin{array}{cccc}%
+			\pruf{%
+			\AXC{$\Gamma \vdash f : b/a~~$}
+			\AXC{$~~\Delta \vdash e : a$}
+			\lab{$/$}
+			\BIC{$\Gamma \cdot \Delta \vdash f\,e : b$}
+			}
+			&
+			\pruf{%
+			\AXC{$\Delta \vdash e : a~~$}
+			\AXC{$~~\Gamma \vdash f : a \backslash b$}
+			\lab{$\backslash$}
+			\BIC{$\Delta \cdot \Gamma \vdash f\,e : b$}
+			}
+			&
+			\pruf{%
+			\AXC{$\Delta \vdash m : \textsf{K}\,(b/a)\,r~~$}
+			\AXC{$~~\Gamma \vdash n : \textsf{K}\,a\,r$}
+			\lab{$\sslash$}
+			\BIC{$\Delta \cdot \Gamma \vdash \bsf{S}_/ m\,n : \textsf{K}\,b\,r$}
+			}
+			&
+			\pruf{%
+			\AXC{$\Delta \vdash m : \textsf{K}\,a\,r~~$}
+			\AXC{$~~\Gamma \vdash n : \textsf{K}\,(a \backslash b)\,r$}
+			\lab{$\bbslash$}
+			\BIC{$\Delta \cdot \Gamma \vdash \bsf{S}_\backslash m\,n : \textsf{K}\,b\,r$}%
+			}
+		\end{array}
+		\\\\
+		\begin{array}{cc}
+			\pruf{%
+			\AXC{$\Gamma \vdash e : a$}
+			\lab{$\uparrow$}
+			\UIC{$\Gamma \vdash \lambda k.\,k\,e : \textsf{K}\,a\,r$}%
+			}
+			&
+			\pruf{%
+			\AXC{$\Gamma \vdash m : \textsf{K}\,r\,r$}
+			\lab{$\downarrow$}
+			\UIC{$\Gamma \vdash m\,(\lambda x.\,x) : r$}%
+			}
+		\end{array}
+		\\[-1em]
+		\end{array}\]}
+		\caption{Partial multimodal continuized grammar, no side effects.}
+		\label{fig1}
+	\end{figure*}
+	\begin{figure*}
+		{\small\[\begin{array}{c}
+		\begin{array}{cccc}%
+			\pruf{%
+			\AXC{$\Gamma \vdash f : b/a~~$}
+			\AXC{$~~\Delta \vdash e : a$}
+			\lab{$/$}
+			\BIC{$\Gamma \cdot \Delta \vdash f\,e : b$}
+			}
+			&
+			\pruf{%
+			\AXC{$\Delta \vdash e : a~~$}
+			\AXC{$~~\Gamma \vdash f : a \backslash b$}
+			\lab{$\backslash$}
+			\BIC{$\Delta \cdot \Gamma \vdash f\,e : b$}
+			}
+			&
+			\pruf{%
+			\AXC{$\Delta \vdash m : \textsf{K}\,(b/a)\,r~~$}
+			\AXC{$~~\Gamma \vdash n : \textsf{K}\,a\,r$}
+			\lab{$\sslash$}
+			\BIC{$\Delta \cdot \Gamma \vdash \bsf{S}_/ m\,n : \textsf{K}\,b\,r$}
+			}
+			&
+			\pruf{%
+			\AXC{$\Delta \vdash m : \textsf{K}\,a\,r~~$}
+			\AXC{$~~\Gamma \vdash n : \textsf{K}\,(a \backslash b)\,r$}
+			\lab{$\bbslash$}
+			\BIC{$\Delta \cdot \Gamma \vdash \bsf{S}_\backslash m\,n : \textsf{K}\,b\,r$}%
+			}
+		\end{array}
+		\\\\
+		\begin{array}{cc}
+			\pruf{%
+			\AXC{$\Gamma \vdash e : \textsf{M}\,a$}
+			\lab{$\uparrow$}
+			\UIC{$\Gamma \vdash \lambda k.\,e \star k : \textsf{K}\,a\,\textsf{M}\,r$}%
+			}
+			&
+			\pruf{%
+			\AXC{$\Gamma \vdash m : \textsf{K}\,r\,\textsf{M}\,r$}
+			\lab{$\downarrow$}
+			\UIC{$\Gamma \vdash m\,\eta : \textsf{M}\,r$}%
+			}
+		\end{array}
+		\\[-1em]
+		\end{array}\]}
+		\caption{Partial multimodal continuized grammar, with side effects.}
+		\label{fig2}
+	\end{figure*}
+	
 	\item Type-theoretic details here
 	
 	\item Adding side effects (\citealt{Wadler:1994, Wadler:1995, Shan:2002}): monads%
@@ -66,7 +172,7 @@
 
 	\item Two type constructors:
 	\begin{itemize}
-		\item Bipartite Cont: 
+		\item Bipartite Cont: $\textsf{K}\,a\,b \Coloneqq (a \ra b) \ra b$
 		\item Unary Monadic: 
 	\end{itemize}
 	
@@ -122,7 +228,7 @@
 			\\
 			\eta\,x &{}\ceq{} &\lambda s.\left\{\ab{x,\,s}\right\}
 			\\
-			m \star k &{}\ceq{} &\lambda s.\displaystyle\bigcup_{\mathclap{\pi\in ms}}k\,\pi_0\,\pi_1%
+			m \star k &{}\ceq{} &\lambda s.\displaystyle\bigcup_{\mathclap{\pi \in ms}}k\,\pi_0\,\pi_1%
 		\end{array}\]
 	\end{defi}
 	

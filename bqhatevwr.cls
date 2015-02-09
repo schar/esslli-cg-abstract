@@ -402,8 +402,8 @@
 
 % users can override these commands using float.sty's functionality
 \floatstyle{sp}
-\restylefloat{figure}
-\restylefloat{table}
+%\restylefloat{figure}
+%\restylefloat{table}
 
 %=====================================================================
 %=========================== useful macros ===========================
