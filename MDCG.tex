@@ -17,11 +17,13 @@
 
 \section{Outline}
 \begin{itemize}	
-	\item Continuized CCGs generalize scope-taking (``ubiquitous scopal pied piping'') using three operations: \bsf{lift}, \bsf{triv}, and \bsf{scope}. %
+	\item Extant CCG treatments of dynamic anaphora: \citealt{Groote:2006, BarkerShan:2008}. [Motivation for pursuing another approach. BS clearly no good (\citealt{Charlow:2010}). dG works well enough, and can be combined with BS regime, but...?]%
 	
-	\item Main proposal: replacing \bsf{lift} and \bsf{triv} with options that countenance side effects (\citealt{Shan:2005}). Any side effects regime can be grafted onto a continuized CCG, by replacing \bsf{lift} and \bsf{triv} with monadic functors.%
+	\item Continuized CCGs offer a grammar-wide generalization of scope-taking (``ubiquitous scopal pied piping'') using three operations: \bsf{lift}, \bsf{triv}, and \bsf{scope}. Any constituent can be a scope-taker.%
 	
-	\item Give a general technique for accomplishing this, relate it to the ContT monad transformer (\citealt{Liangetal}). Offers a type-theoretic way to track effects, integrate them into a well-developed CCG framework for scope-taking.%
+	\item Proposal: replace \bsf{lift} and \bsf{triv} with options that countenance side effects (\citealt{Shan:2005}). Any side effects regime can be grafted onto a continuized CCG, by replacing \bsf{lift} and \bsf{triv} with monadic functors (\citealt{Moggi:1989, Wadler:1992, Wadler:1994, Wadler:1995, Shan:2002}).%
+	
+	\item We provide a general technique for integrating a monadic approach to side effects with continuations-based approaches to scope in CCG. We relate our approach to the ContT monad transformer (\citealt{Liangetal}). Offers a type-theoretic way to track effects, integrate them into a well-developed CCG framework for scope-taking.%
 	
 	\item Dynamic semantics is (\citealt{Shan:2001}):\footnote{NB: does not characterize all varieties of dynamic semantics. Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Dekker:1993, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.}%
 	\begin{itemize}
@@ -36,6 +38,8 @@
 	\item The standard continuations-based perspective of \citealt{Barker:2002, ShanBarker:2006, BarkerShan:2014} is an instantiation of a more general perspective.%
 	
 	\item Standard dynamic techniques (DPL, DMG) not reducible to monads. 
+	
+	\item Broader question: how this relates to the idea that continuations can simulate any monad (\citealt{Filin}). I don't understand this result well enough to say anything. %
 \end{itemize}
 
 \section{Adding side effects to $k$}
@@ -49,7 +53,11 @@
 
 	\item Type-theoretic details here
 	
-	\item Adding side effects (\citealt{Wadler:1994, Wadler:1995, Shan:2002}): 
+	\item Adding side effects (\citealt{Wadler:1994, Wadler:1995, Shan:2002}): monads%
+	
+	\item Monad laws / punting
+	
+	\item Relating monads to continuized grammars:
 	\begin{itemize}
 		\item Replace \bsf{lift} with $\star$
 		\item Replace \bsf{triv} with $\eta$
