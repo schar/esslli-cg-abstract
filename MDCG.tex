@@ -15,41 +15,45 @@
 \begin{document}
 %\maketitle
 
-\section{Overview}
+\section{Outline}
 \begin{itemize}	
-	\item Any side effects regime can be grafted onto a continuized CCG. Give a general technique for accomplishing this, relate it to the ContT monad transformer (\citealt{Liangetal}).%
+	\item Continuized CCGs generalize scope-taking (``ubiquitous scopal pied piping'') using three operations: \bsf{lift}, \bsf{triv}, and \bsf{scope}. %
 	
-	\item Yields two combinators. Type-theoretic way to track effects (\citealt{Shan:2005}).%
+	\item Main proposal: replacing \bsf{lift} and \bsf{triv} with options that countenance side effects (\citealt{Shan:2005}). Any side effects regime can be grafted onto a continuized CCG, by replacing \bsf{lift} and \bsf{triv} with monadic functors.%
+	
+	\item Give a general technique for accomplishing this, relate it to the ContT monad transformer (\citealt{Liangetal}). Offers a type-theoretic way to track effects, integrate them into a well-developed CCG framework for scope-taking.%
 	
 	\item Dynamic semantics is (\citealt{Shan:2001}):\footnote{NB: does not characterize all varieties of dynamic semantics. Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Dekker:1993, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.}%
 	\begin{itemize}
 		\item State: ability to manipulate the discourse context, i.e.~create discourse referents.%
-		\item Nondeterminism: indefinites are 
+		\item Nondeterminism: analogizes indefinites to referential expressions. Treats indefinites as referring expressions, though ones which refer indeterminately.%
 	\end{itemize}
 	
-	\item No need to settle on ``the'' grammar. Functional application can live in its bones, and side effects can be grafted on, modularly. Lexical entries that would from a more flat-footed perspective seem completely incongruous can play together nicely. %
-	
-	\item The perspective \citealt{Barker:2002, ShanBarker:2006, BarkerShan:2014} is in a sense an instantiation of this general perspective, where the underlying monad is the \textsf{Identity} monad.%
+	\item Corollary: there is no need to settle on a single (``the'') grammar. Different and quite varied side effects regimes can be modularly grafted onto a simple applicative (``pure'') core. Lexical entries that would seem incongruous in a flat-footed standard perspective integrate seamlessly in a single grammar. %
 	
 	\item Monads as a natural way to extend a continuations-based grammar with tools for dynamic binding and exceptional scope. In the end: you have functional application, plus the functors from whichever monads are implicated in a given language. %
 	
-	\item Other techniques (DPL, DMG) not reducible to monads.
+	\item The standard continuations-based perspective of \citealt{Barker:2002, ShanBarker:2006, BarkerShan:2014} is an instantiation of a more general perspective.%
+	
+	\item Standard dynamic techniques (DPL, DMG) not reducible to monads. 
 \end{itemize}
 
 \section{Adding side effects to $k$}
 \begin{itemize}
-	\item Normal continuized grammar:
+	\item Standard continuized grammar:
 	\begin{itemize}
-		\item Lift
-		\item Lower
-		\item Continuized functional application
+		\item \bsf{lift}: $\lambda k.\,k\,x$
+		\item \bsf{triv}: $\lambda x.\,x$
+		\item \bsf{scope}: $\lambda k.\,m\,(\lambda f.\,n\,(\lambda x.\,k\,(f\,x)))$%
 	\end{itemize}
 
+	\item Type-theoretic details here
+	
 	\item Adding side effects (\citealt{Wadler:1994, Wadler:1995, Shan:2002}): 
 	\begin{itemize}
-		\item Replace Lift with $\star$
-		\item Replace Lower with $\eta$
-		\item Keep continuized functional application
+		\item Replace \bsf{lift} with $\star$
+		\item Replace \bsf{triv} with $\eta$
+		\item \bsf{scope} stays the same
 	\end{itemize}
 
 	\item Two type constructors:
@@ -65,7 +69,7 @@
 	\item The meat of PLA (\citealt{Dekker:1994}): sentences are relations on stacks. Non-empty relations correspond to truth. Non-functional pairs in the relation correspond to nondeterminism introduced by indefinites (and perhaps disjunction).%
 	\[\sv{\text{a linguist}} = \lambda ks.\bigcup_{\mathclap{x\in\,\textsf{ling}}}k\,x\,\widehat{sx}\]%
 
-	\item A different perspective on this. 
+	\item A different perspective on this: treating nondeterminism and state modification as side effects, within a functional programming setting for side effects. %
 	
 	\item Monad for nondeterminism:
 	\begin{defi}[The Set monad]\label{set}
@@ -117,11 +121,11 @@
 
 	\item Static lexicon, dynamic lexicon
 	
-	\item Binding, totally modularized
+	\item Modular treatment of binding.%
 	\[\begin{array}{ll}
-		BarkerShan:& \bsf{bind}\,m \ceq \lambda k.\,m\,(\lambda x.\,k\,x\,x)
+		\text{Previous}:& \bsf{bind}\,m \ceq \lambda k.\,m\,(\lambda x.\,k\,x\,x)%
 		\\
-		Now:& \bsf{bind}\,m \ceq \lambda k.\,m\,(\lambda xs.\,k\,x\,\widehat{sx})%
+		\text{Proposal}:& \bsf{bind}\,m \ceq \lambda k.\,m\,(\lambda xs.\,k\,x\,\widehat{sx})%
 	\end{array}\]
 	
 	\item Summing up: three combinators for ``order-insensitive'' (i.e.~continuized combination). \bsf{unit}, \bsf{run}, \bsf{bind}%
@@ -136,8 +140,8 @@
 
 \section{Examples}
 \begin{itemize}
-	\item Interesting properties: no dynamic conjunction, completely standard model theory (cf.~\citealt{Groote:2006}). %
-\end{itemize}
+	\item Some upshots: no dynamic conjunction, completely standard model theory (cf.~\citealt{Groote:2006}). ``Contexts of evaluation'' are constructed on the fly. %
+	\end{itemize}
 
 \citealt{Groote:2001}
 \citealt{Charlow:diss}
