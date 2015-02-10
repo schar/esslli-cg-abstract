@@ -1,5 +1,5 @@
 %\begin{pre}
-\documentclass[10pt,twocolumn]{bqhatevwr}
+\documentclass[10pt,twocolumn,a4paper]{bqhatevwr}
 \usepackage{etex,amsmath,mathtools,newtxtext,newtxmath,expex,natbib,tikz-qtree,bookmark,tree-dvips}%
 \usepackage[margin=1in]{geometry}
 \usepackage{bussproofs}\EnableBpAbbreviations
@@ -19,22 +19,22 @@
 %\maketitle
 
 \section{Outline}
-\begin{itemize}		
+\begin{itemize}
 	\item Continuized CCGs offer a grammar-wide generalization of scope-taking (``ubiquitous scopal pied piping'') that brings quantifiers and scope-taker more generally into the compositional fold. Three combinators, \bsf{lift}, \bsf{triv}, and \bsf{scope}, form the backbone of the grammar, allowing scope-takers to interact with their linguistic context. In addition, a \bsf{bind} shifter is introduced to facilitate quantificational binding. %
 	
 	\item Extant CCG treatments of E-type anaphora (i.e.~cross-sentential and donkey anaphora): \citealt{BarkerShan:2008}. Motivation for pursuing another approach. BS approach has not-so-good empirical coverage (\citealt{Charlow:2010}). \citealt{Groote:2006} can be combined with BS regime, but...?%
 	
 	\item Proposal: replace \bsf{lift} and \bsf{triv} with options that countenance side effects (\citealt{Shan:2005}). Any side effects regime can be grafted onto a continuized CCG, by replacing \bsf{lift} and \bsf{triv} with monadic functors (\citealt{Moggi:1989, Wadler:1992, Wadler:1994, Wadler:1995, Shan:2002}).%
 	
-	\item We provide a general technique for integrating a monadic approach to side effects with continuations-based approaches to scope in CCG. We relate our approach to the ContT monad transformer (\citealt{Liangetal}). Offers a type-theoretic way to track effects, integrate them into a well-developed CCG framework for scope-taking.%
-	
-	\item Therefore, these results are of interest both for the categorial grammarian interested in donkey anaphora and scope-taking, as well as more generally. Any side-effects regime a semanticist thinks is motivated can be accommodated along these lines. Further, because of the inherent modularity, adding side effects necessitates neither fiddling with the basic compositional machinery, nor messing with lexical items which don't exploit side effects.%
-	
 	\item Dynamic semantics is (\citealt{Shan:2001}):\footnote{NB: does not characterize all varieties of dynamic semantics. Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Dekker:1993, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.}%
 	\begin{itemize}
 		\item State: ability to manipulate the discourse context, i.e.~create discourse referents.%
 		\item Nondeterminism: analogizes indefinites to referential expressions. Treats indefinites as referring expressions, though ones which refer indeterminately.%
 	\end{itemize}
+	
+	\item We provide a general technique for integrating a monadic approach to side effects with continuations-based approaches to scope in CCG. We relate our approach to the ContT monad transformer (\citealt{Liangetal}). Offers a type-theoretic way to track effects, integrate them into a well-developed CCG framework for scope-taking.%
+	
+	\item Therefore, these results are of interest both for the categorial grammarian interested in donkey anaphora and scope-taking, as well as more generally. Any side-effects regime a semanticist thinks is motivated can be accommodated along these lines. Further, because of the inherent modularity, adding side effects necessitates neither fiddling with the basic compositional machinery, nor messing with lexical items which don't exploit side effects.%
 	
 	\item Corollary: there is no need to settle on a single (``the'') grammar. Different and quite varied side effects regimes can be modularly grafted onto a simple applicative (``pure'') core. Lexical entries that would seem incongruous in a flat-footed standard perspective integrate seamlessly in a single grammar. %
 	
@@ -47,8 +47,7 @@
 	\item Broader question: how this relates to the idea that continuations can simulate any monad (\citealt{Filinski:1994}). I don't understand this result well enough to say anything. %
 \end{itemize}
 
-\section{Adding side effects to $k$}
-
+\section{Adding side effects}
 \begin{itemize}
 	\item Standard continuized grammar:
 	\begin{itemize}
@@ -57,9 +56,10 @@
 		\item \bsf{scope}: $\lambda k.\,m\,(\lambda f.\,n\,(\lambda x.\,k\,(f\,x)))$%
 	\end{itemize}
 	
-	\item To do: insert figure with inference rules.
+	\item Continuized type constructor. Agnostic about directionality. Combined with direction-sensitive mode of combination. See Figure \ref{fig1}.%
+	\[\textsf{K}\,a\,b \Coloneqq (a \ra b) \ra b\] 
 	\begin{figure*}
-		{\small\[\begin{array}{c}
+		{\small\[\begin{array}{@{}c@{}}
 		\begin{array}{cccc}%
 			\pruf{%
 			\AXC{$\Gamma \vdash f : b/a~~$}
@@ -158,8 +158,8 @@
 		\caption{Partial multimodal continuized grammar, with side effects.}
 		\label{fig2}
 	\end{figure*}
-	
-	\item Type-theoretic details here
+	%
+	\item Type-theoretic details here. Dylan: I am not entirely sure the type system makes sense. What I'm after: something basically along the lines of \citealt{ShanBarker:2006}, where combinators apply to combinators. Interesting property of that system: they use Lift to allow them only one Scope combinator (i.e.~the thing on the left can always be the functor). Central question: the proper way to relate the continuations mode slashes with the direct mode slashes. The way I did it in my diss appendix was essentially to have a unimodal grammar, but a more elegant solution would be welcome (and important since this is after all a categorial grammar conference!). %
 	
 	\item Adding side effects (\citealt{Wadler:1994, Wadler:1995, Shan:2002}): monads%
 	
@@ -171,21 +171,19 @@
 		\item Replace \bsf{triv} with $\eta$
 		\item \bsf{scope} stays the same
 	\end{itemize}
-
-	\item Two type constructors:
-	\begin{itemize}
-		\item Bipartite Cont: $\textsf{K}\,a\,b \Coloneqq (a \ra b) \ra b$
-		\item Unary Monadic: 
-	\end{itemize}
 	
 \end{itemize}
 
 \section{Finding the dynamic monad}
 \begin{itemize}
-	\item The meat of PLA (\citealt{Dekker:1994}): sentences are relations on stacki. Non-empty relations correspond to truth. Non-functional pairs in the relation correspond to nondeterminism introduced by indefinites (and perhaps disjunction).%
-	\[\sv{\text{a linguist}} = \lambda ki.\bigcup_{\mathclap{x\in\,\textsf{ling}}}k\,x\,\widehat{ix}\]%
+	\item The meat of PLA, translated into a compositional framework (\citealt{Dekker:1994}): sentences denote relations on sequences. Non-empty relations correspond to truth. Non-functional pairs in the relation correspond to nondeterminism introduced by indefinites (and perhaps disjunction). Conjunction corresponds to relation composition, which pipes the sequences output by the left conjunct to the right conjunct.%
+	\[\begin{array}{r@{}l}
+		\sv{\text{a linguist}} &{}= \lambda ki.\displaystyle\bigcup_{\mathclap{x\in\,\textsf{ling}}}k\,x\,\widehat{ix}%
+		\\
+		\sv{\text{a linguist left}} &{}= \lambda i.\,\{\widehat{ix} : x \in \textsf{ling} \wedge x \in \textsf{left}\}%
+	\end{array}\]%
 
-	\item A different perspective on this: treating nondeterminism and state modification as side effects, within a functional programming setting for side effects. %
+	\item Two key bits: state modification for introducing drefs, nondeterminism to allow for failure and referring treatment of indefinites. A different perspective on this: treating nondeterminism and state modification as side effects, within a functional programming setting for side effects. %
 	
 	\item Monad for nondeterminism:
 	\begin{defi}[The Set monad]\label{set}
