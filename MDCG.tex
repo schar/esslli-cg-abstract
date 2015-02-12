@@ -49,18 +49,13 @@
 
 \section{Adding side effects}
 \begin{itemize}
-	\item Standard continuized grammar:
-	\begin{itemize}
-		\item \bsf{lift}: $\lambda k.\,k\,x$
-		\item \bsf{triv}: $\lambda x.\,x$
-		\item \bsf{scope}: $\lambda k.\,m\,(\lambda f.\,n\,(\lambda x.\,k\,(f\,x)))$%
-	\end{itemize}
+	\item Standard continuized grammar is, simplifying somewhat, three combinators: \bsf{lift}, \bsf{triv}, and \bsf{scope}. %
 	
 	\item Continuized type constructor. Agnostic about directionality. Combined with direction-sensitive mode of combination. See Figure \ref{fig1}.%
 	\[\textsf{K}\,a\,b \Coloneqq (a \ra b) \ra b\] 
 	\begin{figure*}
 		{\small\[\begin{array}{@{}c@{}}
-		\begin{array}{cccc}%
+		\begin{array}{c@{\hspace{2em}}c@{\hspace{2em}}c@{\hspace{2em}}c}%
 			\pruf{%
 			\AXC{$\Gamma \vdash f : b/a~~$}
 			\AXC{$~~\Delta \vdash e : a$}
@@ -79,38 +74,31 @@
 			\AXC{$\Delta \vdash m : \textsf{K}\,(b/a)\,r~~$}
 			\AXC{$~~\Gamma \vdash n : \textsf{K}\,a\,r$}
 			\lab{$\sslash$}
-			\BIC{$\Delta \cdot \Gamma \vdash \bsf{S}_/ m\,n : \textsf{K}\,b\,r$}
-			}
-			&
-			\pruf{%
-			\AXC{$\Delta \vdash m : \textsf{K}\,a\,r~~$}
-			\AXC{$~~\Gamma \vdash n : \textsf{K}\,(a \backslash b)\,r$}
-			\lab{$\bbslash$}
-			\BIC{$\Delta \cdot \Gamma \vdash \bsf{S}_\backslash m\,n : \textsf{K}\,b\,r$}%
+			\BIC{$\Delta \cdot \Gamma \vdash \bsf{S}\,m\,n : \textsf{K}\,b\,r$}
 			}
 		\end{array}
 		\\\\
-		\begin{array}{cc}
-			\pruf{%
-			\AXC{$\Gamma \vdash e : a$}
-			\lab{$\uparrow$}
-			\UIC{$\Gamma \vdash \lambda k.\,k\,e : \textsf{K}\,a\,r$}%
-			}
-			&
-			\pruf{%
-			\AXC{$\Gamma \vdash m : \textsf{K}\,r\,r$}
-			\lab{$\downarrow$}
-			\UIC{$\Gamma \vdash m\,(\lambda x.\,x) : r$}%
-			}
+		\begin{array}{c@{\hspace{2em}}c}
+				\pruf{%
+				\AXC{}
+				\lab{\bsf{triv}}
+				\UIC{$\varepsilon \vdash \lambda x.\,x : a \ra a$}
+				}
+				&
+				\pruf{%
+				\AXC{}
+				\lab{\bsf{lift}}
+				\UIC{$\varepsilon \vdash \lambda xk.\,k\,x:  a \ra \textsf{K}\,a\,r$}%
+				}
 		\end{array}
 		\\[-1em]
 		\end{array}\]}
-		\caption{Partial multimodal continuized grammar, no side effects.}
+		\caption{Continuized CCG without side effects (fixing some result type $r$).}%
 		\label{fig1}
 	\end{figure*}
 	\begin{figure*}
 		{\small\[\begin{array}{c}
-		\begin{array}{cccc}%
+		\begin{array}{c@{\hspace{2em}}c@{\hspace{2em}}c@{\hspace{2em}}c}%
 			\pruf{%
 			\AXC{$\Gamma \vdash f : b/a~~$}
 			\AXC{$~~\Delta \vdash e : a$}
@@ -129,33 +117,26 @@
 			\AXC{$\Delta \vdash m : \textsf{K}\,(b/a)\,r~~$}
 			\AXC{$~~\Gamma \vdash n : \textsf{K}\,a\,r$}
 			\lab{$\sslash$}
-			\BIC{$\Delta \cdot \Gamma \vdash \bsf{S}_/ m\,n : \textsf{K}\,b\,r$}
-			}
-			&
-			\pruf{%
-			\AXC{$\Delta \vdash m : \textsf{K}\,a\,r~~$}
-			\AXC{$~~\Gamma \vdash n : \textsf{K}\,(a \backslash b)\,r$}
-			\lab{$\bbslash$}
-			\BIC{$\Delta \cdot \Gamma \vdash \bsf{S}_\backslash m\,n : \textsf{K}\,b\,r$}%
+			\BIC{$\Delta \cdot \Gamma \vdash \bsf{S}\,m\,n : \textsf{K}\,b\,r$}
 			}
 		\end{array}
 		\\\\
-		\begin{array}{cc}
-			\pruf{%
-			\AXC{$\Gamma \vdash e : \textsf{M}\,a$}
-			\lab{$\uparrow$}
-			\UIC{$\Gamma \vdash \lambda k.\,e \star k : \textsf{K}\,a\,\textsf{M}\,r$}%
-			}
-			&
-			\pruf{%
-			\AXC{$\Gamma \vdash m : \textsf{K}\,r\,\textsf{M}\,r$}
-			\lab{$\downarrow$}
-			\UIC{$\Gamma \vdash m\,\eta : \textsf{M}\,r$}%
-			}
+		\begin{array}{c@{\hspace{2em}}c}
+				\pruf{%
+				\AXC{}
+				\lab{\bsf{triv}}
+				\UIC{$\varepsilon \vdash \eta : a \ra \textsf{M}\,a$}
+				}
+				&
+				\pruf{%
+				\AXC{}
+				\lab{\bsf{lift}}
+				\UIC{$\varepsilon \vdash (\star) :  \textsf{M}\,a \ra \textsf{K}\,a\,\textsf{M}\,r$}%
+				}
 		\end{array}
 		\\[-1em]
 		\end{array}\]}
-		\caption{Partial multimodal continuized grammar, with side effects.}
+		\caption{Continuized CCG with side effects (fixing a monad \ab{\textsf{M},\,\eta,\,\star} and a result type $r$).}%
 		\label{fig2}
 	\end{figure*}
 	%
@@ -176,26 +157,14 @@
 
 \section{Finding the dynamic monad}
 \begin{itemize}
-	\item The meat of PLA, translated into a compositional framework (\citealt{Dekker:1994}): sentences denote relations on sequences. Non-empty relations correspond to truth. Non-functional pairs in the relation correspond to nondeterminism introduced by indefinites (and perhaps disjunction). Conjunction corresponds to relation composition, which pipes the sequences output by the left conjunct to the right conjunct.%
+	\item The meat of PLA (\citealt{Dekker:1994}), translated into a compositional framework: sentences denote relations on sequences. Non-empty relations correspond to truth. Non-functional pairs in the relation correspond to nondeterminism introduced by indefinites (and perhaps disjunction). Conjunction corresponds to relation composition, which pipes the sequences output by the left conjunct to the right conjunct.%
 	\[\begin{array}{r@{}l}
-		\sv{\text{a linguist}} &{}= \lambda ki.\displaystyle\bigcup_{\mathclap{x\in\,\textsf{ling}}}k\,x\,\widehat{ix}%
+		\sv{\text{a linguist}} &{}= \lambda ki.\displaystyle\bigcup_{\mathclap{x\in\,\textsf{ling}}}k\,x\,(i + x)%
 		\\
-		\sv{\text{a linguist left}} &{}= \lambda i.\,\{\widehat{ix} : x \in \textsf{ling} \wedge x \in \textsf{left}\}%
+		\sv{\text{a linguist left}} &{}= \lambda i.\,\{i + x : x \in \textsf{ling} \wedge x \in \textsf{left}\}%
 	\end{array}\]%
 
 	\item Two key bits: state modification for introducing drefs, nondeterminism to allow for failure and referring treatment of indefinites. A different perspective on this: treating nondeterminism and state modification as side effects, within a functional programming setting for side effects. %
-	
-	\item Monad for nondeterminism:
-	\begin{defi}[The Set monad]\label{set}
-		\[\begin{array}[t]
-			{@{}l@{}c@{}l@{}}
-			\textsf{M}\,a &{}\Coloneqq{} &a \ra t%
-			\\
-			\eta\,x &{}\ceq{} &\{x\}
-			\\
-			m \star k &{}\ceq{} &\displaystyle\bigcup_{\mathclap{x\in \,m}}k\,x%
-		\end{array}\]
-	\end{defi}
 	
 	\item Monad for state (generalization of monad for environment-sensitivity). Assume that $\gamma$ is the type of ``contexts of evaluation''. For our purposes, we might think of $\gamma$ as inhabited by \emph{sequences of discourse referents}.%
 	\begin{defi}[The State monad]\label{state}
@@ -209,14 +178,39 @@
 		\end{array}\]
 	\end{defi}
 	
-	\item Given our identification of $\gamma$ with the set of sequences of discourse referents, a natural operation to suppose as associated with dref introduction is sequence extension (cf.~\citealt{Groote:2006, Unger:2012}): %
-	\begin{defi}[Sequence extension]
-		\[m^\rhd \ceq m \star \lambda xi.\,\ab{x,\,\widehat{ix}}\]
+	\item Given our identification of $\gamma$ with the set of sequences of discourse referents, a natural operation to suppose as associated with dref introduction is sequence extension (cf.~\citealt{Groote:2006, Unger:2012, Charlow:diss}). These definitions rely on the notion of extending a sequence (e.g., if $i \ceq abcd$, $i+e = abcde$) and retrieving the last, i.e.~most topical, discourse reference (e.g., if $i \ceq abcde$, $i_\top = e$).\footnote{This is an extremely crude measure of topicality, but it will suffice to illustrate the main points.}%
+	\begin{defi}[Dref introduction]
+		\[m^\rhd \ceq m \star \lambda xi.\,\ab{x,\,i + x}\]
+	\end{defi}
+	\begin{defi}[Dref retrieval]
+		\[\bsf{get} \ceq \lambda i.\,\ab{i_\top,\,i}\]
 	\end{defi}
 	
-	\item An example:
-	\[(\eta\,\textsf{a})^\rhd\! \star \lambda x.\,\eta\,(\textsf{left}\,x) = \lambda i.\,\ab{\textsf{left}\,\textsf{a},\,\widehat{i\textsf{a}}}\]%
+	\item An example, \emph{Al left} (call this \bsf{X}):
+	\[(\eta\,\textsf{a})^\rhd\! \star \lambda x.\,\eta\,(\textsf{left}\,x) = \lambda i.\,\ab{\textsf{left}\,\textsf{a},\,i+\textsf{a}}\]%
 	
+	\item Pronoun sentence \emph{he was tired} (call this \bsf{Y}):
+	\[\bsf{get} \star \lambda x.\,\eta\,(\textsf{tired}\,x) = \lambda i.\,\ab{\textsf{tired}\,i_\top,\,i}\]%
+	
+	\item Sequencing the two. The dref introduced by the proper name in the first sentence is accessed by the pronoun in the second. %
+	\[\begin{array}{r@{}l}
+		\bsf{X} \star \lambda p.\,\bsf{Y}&{}\star \lambda q.\,\eta\,(p \wedge q) %
+		\\
+		&{}= \lambda i.\,\ab{\textsf{left}\,\textsf{a} \wedge \textsf{tired}\,\textsf{a},\,i+\textsf{a}}%
+	\end{array}\]
+	
+	\item So we have state modification as a side effect. To say something about indefinites, i.e.~to allow them to refer and introduce drefs nondeterministically, we need to enrich the state monad with nondeterministic side effects. The monad for nondeterminism is the Set monad, given in Definition \ref{set}:%
+	\begin{defi}[The Set monad]\label{set}
+		\[\begin{array}[t]
+			{@{}l@{}c@{}l@{}}
+			\textsf{M}\,a &{}\Coloneqq{} &a \ra t%
+			\\
+			\eta\,x &{}\ceq{} &\{x\}
+			\\
+			m \star k &{}\ceq{} &\displaystyle\bigcup_{\mathclap{x\in \,m}}k\,x%
+		\end{array}\]
+	\end{defi}
+
 	\item Use StateT to stitch the two together. Given any monad ${\cal M}= \ab{\textsf{L},\,\eta_\textsf{L},\,\star_\textsf{L}}$, StateT is a recipe for building a new monad with which adds State-type functionality to ${\cal M}$:\footnote{Fn. about SetT}%
 	\begin{defi}[The StateT monad transformer]\label{statet}
 		\[\begin{array}[t]
@@ -228,7 +222,6 @@
 			m \star k &{}\ceq{} &\lambda i.\, m\,i\star_\textsf{L} \lambda \pi.\,k\,\pi_0\,\pi_1%
 		\end{array}\]
 	\end{defi}
-	%
 	\begin{defi}[The State\_Set monad]\label{stateset}
 		\[\begin{array}[t]
 			{@{}l@{}c@{}l@{}}
@@ -239,7 +232,6 @@
 			m \star k &{}\ceq{} &\lambda i.\displaystyle\bigcup_{\mathclap{\pi \in mi}}k\,\pi_0\,\pi_1%
 		\end{array}\]
 	\end{defi}
-	
 
 	\item Static lexicon, dynamic lexicon
 	
@@ -247,24 +239,17 @@
 	\[\begin{array}{ll}
 		\text{Previous}:& \bsf{bind}\,m \ceq \lambda k.\,m\,(\lambda x.\,k\,x\,x)%
 		\\
-		\text{Proposal}:& \bsf{bind}\,m \ceq \lambda k.\,m\,(\lambda xi.\,k\,x\,\widehat{ix})%
+		\text{Proposal}:& \bsf{bind}\,m \ceq \lambda k.\,m\,(\lambda xi.\,k\,x\,i + x)%
 	\end{array}\]
 	
-	\item Summing up: three combinators for ``order-insensitive'' (i.e.~continuized combination). \bsf{unit}, \bsf{run}, \bsf{bind}%
-	\[\begin{array}{lllll}
-		& \bsf{lift}\,m & M\,\bsf{triv} & \bsf{bind}\,M %& \bsf{scope}\,M\,N%
-		\\
-		\text{Previous} & \lambda k.\,k\,m & M\,(\lambda x.\,x) & \lambda k.\,m\,(\lambda x.\,k\,x\,x)%
-		\\
-		\text{Proposal} & \lambda k.\,m \star k & M\,\eta & \lambda k.\,m\,(\lambda xi.\,k\,x\,\widehat{ix})%
-	\end{array}\]
+	\item Summing up: three combinators for ``order-insensitive'' (i.e.~continuized combination). \bsf{unit}, \bsf{run}, \bsf{bind}. Compare Figures \ref{fig1} and \ref{fig2}.%
 \end{itemize}
 
 \section{Examples}
 \begin{itemize}
 	\item Some upshots: no dynamic conjunction, completely standard model theory (cf.~\citealt{Groote:2006}). ``Contexts of evaluation'' are constructed on the fly. %
 	
-	\item Cross-sentential anaphora: the indefinite's side effects influence the evaluation of the second clause, even as the indefinite scopes within its clause. %
+	\item Cross-sentential anaphora. Let us assume that \emph{scope islands}, e.g., tensed clauses, need to be evaluated---i.e., lowered (cf.~\citealt{Barker:2002, BarkerShan:2008}). In practice, this means a tensed clause must pass through a stage where it denotes something of type $\textsf{M}\,t$. There are a variety of options for enforcing this syntactically, but here we concentrate on the semantic upshots of forced evaluation.\footnote{In terms of LF, forcing evaluation of a scope island corresponds to disallowing QR out of the scope island.} the indefinite's side effects influence the evaluation of the second clause, even as the indefinite scopes within its clause. %
 	\[\begin{array}{r}
 		\bsf{a.man.left} \star \lambda p.\,\bsf{he.tired} \star \lambda q.\,\eta\,(p \wedge q)%
 		\\
@@ -280,8 +265,20 @@
 	\item Islands: a clause must denote a $\textsf{M}\,t$
 \end{itemize}
 
+\section{Discussion}
+\begin{itemize}
+	\item 
+	
+	\item Compare PLA, where only sentences are imbued with context change potential. %
+	
+	\item Variable-free, directly compositional (\citealt{Jacobson:1999}).
+	
+	\item Effects recognized in the types. 
+	
+	\item Theory extends to scope islands, wide range of exceptional binding configurations \citealt{Charlow:diss}. %
+\end{itemize}
+
 \citealt{Groote:2001}
-\citealt{Charlow:diss}
 \citealt{Bumford:inc}
 
 {\small\bibliography{bqhatevwr}}
