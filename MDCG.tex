@@ -21,31 +21,24 @@
 
 \section{Outline}
 %\begin{sec}
-	Continuized CCGs offer a grammar-wide generalization of scope-taking (``ubiquitous scopal pied piping'') that brings quantifiers and scope-taker more generally into the compositional fold. Three combinators, \bsf{lift}, \bsf{triv}, and \bsf{scope}, form the backbone of the grammar, allowing scope-takers to interact with their linguistic context. In addition, a \bsf{bind} shifter is introduced to facilitate quantificational binding. \citealt{Groote:2001}%
+	\textbf{C}ontinuized \textbf{C}ombinatory \textbf{C}ategorial \textbf{G}rammars bring scope-takers such as quantificational DPs into the compositional fold by allowing any expression to take scope (e.g.~\citealt{ShanBarker:2006, BarkerShan:2008, BarkerShan:2014}). Roughly, this is accomplished by adding three combinators to an applicative categorial grammar: \bsf{lift} turns any expression into a function on its linguistic context or \emph{continuation}; \bsf{scope} combines two scope-takers to yield a third; and \bsf{triv} is a trivial scope argument used to conclude derivations and delimit a context of evaluation.%
+
+	Though CCCGs offer robust accounts of in-scope binding (ibid.), the treatment of dynamic binding (i.e.~cross-sentential and donkey anaphora) proposed in \citealt{BarkerShan:2008} over-generates (\citealt{Charlow:2010}; see \citealt{BarkerShan:2014} for in-depth discussion). The related theory of \citealt{Groote:2006} (which relies on continuations, but is not a CCG), while treating dynamic binding, does not offer a general account of scope-taking. Both \citealt{BarkerShan:2008} and \citealt{Groote:2006} treat dynamic binding by indefinites, but not by expressions such as \emph{exactly one linguist}, which differs in important ways (cf.~\citealt{KampReyle:1993}). %
 	
-	Extant CCG treatments of E-type anaphora (i.e.~cross-sentential and donkey anaphora): \citealt{BarkerShan:2008}. Motivation for pursuing another approach. BS approach has not-so-good empirical coverage (\citealt{Charlow:2010}). \citealt{Groote:2006} does not handle scope-taking or interactions between scope-takers (can be combined with BS regime, but requires two notions of continuations---a scope and a right context---and does not extend to exceptional scope).%
+	%Three combinators, \bsf{lift}, \bsf{triv}, and \bsf{scope}, form the backbone of the grammar, allowing scope-takers to interact with their linguistic context. In addition, a \bsf{bind} shifter is introduced to facilitate quantificational binding. \citealt{Groote:2001}.%
 	
-	Proposal: replace \bsf{lift} and \bsf{triv} with options that countenance side effects (\citealt{Shan:2005}). Any side effects regime can be grafted onto a continuized CCG, by replacing \bsf{lift} and \bsf{triv} with monadic functors (\citealt{Moggi:1989, Wadler:1992, Wadler:1994, Wadler:1995, Shan:2002}).%
+	This paper presents an explicit CCCG account of dynamic binding which relies on the category-theoretic notion of a monad (e.g.~\citealt{Moggi:1989, Wadler:1992, Wadler:1994, Wadler:1995, Shan:2002}). Monads are a device for enriching a purely applicative grammar with \emph{side effects} (\citealt{Shan:2005}). Specifically, I propose replacing the \bsf{lift} and \bsf{triv} of CCCGs with monadic combinators that countenance side effects.%
 	
-	Dynamic semantics is (\citealt{Shan:2001}):\footnote{NB: does not characterize all varieties of dynamic semantics. Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Dekker:1993, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.}%
-	%\begin{sec}
-		State: ability to manipulate the discourse context, i.e.~create discourse referents.%
-		Nondeterminism: analogizes indefinites to referential expressions. Treats indefinites as referring expressions, though ones which refer indeterminately.%
-	%\end{sec}
-	
-	We provide a general technique for integrating a monadic approach to side effects with continuations-based approaches to scope in CCG. We relate our approach to the ContT monad transformer (\citealt{Liangetal}). Offers a type-theoretic way to track effects, integrate them into a well-developed CCG framework for scope-taking.%
+	 Any side effects regime can be grafted onto a continuized CCG, by replacing \bsf{lift} and \bsf{triv} with monadic functors. I provide a general technique for integrating a monadic approach to side effects with continuations-based approaches to scope in CCG. We relate our approach to the ContT monad transformer (\citealt{Liangetal}). Offers a type-theoretic way to track effects, integrate them into a well-developed CCG framework for scope-taking. I illustrate with a single in-depth case study, the case of dynamic binding. This involves find a monad for state and nondeterminism, positing some lexical entries, and \emph{nothing else}.%
 	
 	Therefore, these results are of interest both for the categorial grammarian interested in donkey anaphora and scope-taking, as well as more generally. Any side-effects regime a semanticist thinks is motivated can be accommodated along these lines. Further, because of the inherent modularity, adding side effects necessitates neither fiddling with the basic compositional machinery, nor messing with lexical items which don't exploit side effects.%
 	
-	Corollary: there is no need to settle on a single (``the'') grammar. Different and quite varied side effects regimes can be modularly grafted onto a simple applicative (``pure'') core. Lexical entries that would seem incongruous in a flat-footed standard perspective integrate seamlessly in a single grammar. %
-	
-	Monads as a natural way to extend a continuations-based grammar with tools for dynamic binding and exceptional scope. In the end: you have functional application, plus the functors from whichever monads are implicated in a given language. %
-	
 	The standard continuations-based perspective of \citealt{Barker:2002, ShanBarker:2006, BarkerShan:2014} is an instantiation of a more general perspective.%
-	
-	Standard dynamic techniques (DPL, DMG) not reducible to monads. 
-	
-	Broader question: how this relates to the idea that continuations can simulate any monad (\citealt{Filinski:1994}). I don't understand this result well enough to say anything (Dylan?). %
+%\end{sec}
+
+\section{Continuations}
+%\begin{sec}
+	Figure \ref{fig1}.
 %\end{sec}
 
 \section{Adding side effects}
@@ -153,14 +146,32 @@
 
 	Relating monads to continuized grammars: identify \bsf{lift} with $\star$, \bsf{triv} with $\eta$. But \bsf{scope} stays the same.%	
 	
-	Regular lifting is a theorem, though the types are further specified:
+	Regular lifting is a theorem, though the types are further specified. For any monad \ab{\textsf{M},\,\eta,\,\star} and any result type $r$:%
 	\begin{fact}
-		
+		$\Gamma \vdash x : a \Rightarrow \Gamma \vdash \lambda k.\,k\,x : \textsf{K}\,a\,\textsf{M}\,r$%
+		%\begin{proof}
+		%	Successive applications of $\eta$, $\star$.
+		%\end{proof}
+	\end{fact}
+	\begin{fact}
+		\[\begin{array}{l}
+			\text{Left Identity: }\eta\,x \star k = k\,x
+			\\
+			\text{Right Identity: }m \star \eta = m
+			\\
+			\text{Associativity: }(m \star k) \star c = m \star \lambda x.\,k\,x \star c
+		\end{array}\]
 	\end{fact}
 %\end{sec}
 
 \section{Finding the dynamic monad}
 %\begin{sec}
+	Dynamic semantics is (\citealt{Shan:2001}):\footnote{NB: does not characterize all varieties of dynamic semantics. Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Dekker:1993, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.}%
+	%\begin{sec}
+		State: ability to manipulate the discourse context, i.e.~create discourse referents. %
+		Nondeterminism: analogizes indefinites to referential expressions. Treats indefinites as referring expressions, though ones which refer indeterminately.%
+	%\end{sec}
+	
 	The meat of PLA (\citealt{Dekker:1994}), translated into a compositional framework: sentences denote relations on sequences. Non-empty relations correspond to truth. Non-functional pairs in the relation correspond to nondeterminism introduced by indefinites (and perhaps disjunction). Conjunction corresponds to relation composition, which pipes the sequences output by the left conjunct to the right conjunct.%
 	\[\begin{array}{r@{}l}
 		\sv{\text{a linguist}} &{}= \lambda ki.\displaystyle\bigcup_{\mathclap{x\in\,\textsf{ling}}}k\,x\,(i + x)%
@@ -213,9 +224,9 @@
 			\\
 			m \star k &{}\ceq{} &\displaystyle\bigcup_{\mathclap{x\in \,m}}k\,x%
 		\end{array}\]
-	\end{defi}
+	\end{defi} 
 
-	Use StateT to stitch the two together. Given any monad ${\cal M}= \ab{\textsf{L},\,\eta_\textsf{L},\,\star_\textsf{L}}$, StateT is a recipe for building a new monad with which adds State-type functionality to ${\cal M}$:\footnote{Fn. about SetT}%
+	Use StateT to stitch the two together. Given any monad ${\cal M}= \ab{\textsf{L},\,\eta_\textsf{L},\,\star_\textsf{L}}$, StateT is a recipe for building a new monad with which adds State-type functionality to ${\cal M}$:\footnote{Fn. about SetT}. Result also known as the Parser monad. \citealt{HuttonMeijer}%
 	\begin{defi}[The StateT monad transformer]\label{statet}
 		\[\begin{array}[t]
 			{@{}l@{}c@{}l@{}}
@@ -248,12 +259,10 @@
 %\end{sec}
 
 \section{Examples}
-%\begin{sec}
-	Some upshots: no dynamic conjunction, completely standard model theory (cf.~\citealt{Groote:2006}). ``Contexts of evaluation'' are constructed on the fly. %
-	
+%\begin{sec}	
 	Cross-sentential anaphora. Let us assume that \emph{scope islands}, e.g., tensed clauses, need to be evaluated---i.e., lowered (cf.~\citealt{Barker:2002, BarkerShan:2008}). In practice, this means a tensed clause must pass through a stage where it denotes something of type $\textsf{M}\,t$. There are a variety of options for enforcing this syntactically, but here we concentrate on the semantic upshots of forced evaluation.\footnote{In terms of LF, forcing evaluation of a scope island corresponds to disallowing QR out of the scope island.} the indefinite's side effects influence the evaluation of the second clause, even as the indefinite scopes within its clause. %
 	\[\begin{array}{r}
-		\bsf{a.man.left} \star \lambda p.\,\bsf{he.tired} \star \lambda q.\,\eta\,(p \wedge q)%
+		\bsf{so.left} \star \lambda p.\,\bsf{he.tired} \star \lambda q.\,\eta\,(p \wedge q)%
 		\\
 		= \bsf{so} \star \lambda x.\,\eta\,(\textsf{left}\,x \wedge \textsf{tired}\,x)%
 	\end{array}\]
@@ -316,6 +325,8 @@
 		\bsf{not}&{}\ceq \lambda ms.\left\{\ab{\neg\exists \pi \in m\,s.\,\pi_0,\,s}\right\}%
 		\\
 		\bsf{no.ling}&{}\ceq \lambda k.\,\bsf{not}\,(\bsf{a.ling} \star k)%	
+		\\
+		\bsf{ev.ling}&{}\ceq \lambda k.\,\bsf{not}\,(\bsf{a.ling} \star \lambda x.\,\bsf{not}\,(k\,x))%
 	\end{array}\]%
 	
 	Compare universals. After ending the derivation at the clause boundary, we're left with a pure computation. The universal's side effects have died on evaluation.%
@@ -327,15 +338,17 @@
 
 \section{Discussion}
 %\begin{sec}
-	Compare PLA, where only sentences are imbued with context change potential. %
+	Compare PLA, where only sentences are imbued with context change potential. Necessary since in PLA and standard dynamic treatments of anaphora, discourse-level content and truth-conditional content are conflated---i.e.~a sentence denotes a non-empty relation on sequences iff the sentence is true. Thus: standard dynamic techniques (DPL, DMG) not reducible to monads. %
 	
-	Variable-free, directly compositional (\citealt{Jacobson:1999}).
+	Some upshots: no dynamic conjunction, completely standard model theory (cf.~\citealt{Groote:2006}). ``Contexts of evaluation'' are constructed on the fly. Variable-free, directly compositional (\citealt{Jacobson:1999}). %
+
+	Monads as a natural way to extend a continuations-based grammar with tools for dynamic binding and exceptional scope. In the end: you have functional application, plus the functors from whichever monads are implicated in a given language. Effects recognized in the types. %
+
+	There is no need to settle on a single (``the'') grammar. Different and quite varied side effects regimes can be modularly grafted onto a simple applicative (``pure'') core. Lexical entries that would seem incongruous in a flat-footed standard perspective integrate seamlessly in a single grammar. %
 	
-	Effects recognized in the types. 
+	Theory extends to scope islands, wide range of exceptional binding configurations \citealt{Charlow:diss}. Extends to pair-list phenomena, functional quantification: \citealt{Bumford:inc}. Crossover, superiority less clear (cf.~\citealt{ShanBarker:2006, BarkerShan:2008}). %
 	
-	Theory extends to scope islands, wide range of exceptional binding configurations \citealt{Charlow:diss}. %
-	
-	Extends to pair-list phenomena, functional quantification: \citealt{Bumford:inc}%
+	Broader question: how this relates to the idea that continuations can simulate any monad (\citealt{Filinski:1994}). I don't understand this result well enough to say anything (Dylan?). %
 %\end{sec}
 
 {\small\bibliography{bqhatevwr}}
