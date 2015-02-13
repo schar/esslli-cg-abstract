@@ -21,15 +21,15 @@
 
 \section{Outline}
 %\begin{sec}
-	\textbf{C}ontinuized \textbf{C}ombinatory \textbf{C}ategorial \textbf{G}rammars bring scope-takers such as quantificational DPs into the compositional fold by allowing any expression to take scope (e.g.~\citealt{ShanBarker:2006, BarkerShan:2008, BarkerShan:2014}). Roughly, this is accomplished by adding three combinators to an applicative categorial grammar: \bsf{lift} turns any expression into a function on its linguistic context or \emph{continuation}; \bsf{scope} combines two scope-takers to yield a third; and \bsf{triv} is a trivial scope argument used to conclude derivations and delimit a context of evaluation.%
+	\textbf{C}ontinuized \textbf{C}ombinatory \textbf{C}ategorial \textbf{G}rammars bring scope-takers such as quantificational DPs into the compositional fold by allowing any expression to take scope (e.g.~\citealt{ShanBarker:2006, BarkerShan:2008, BarkerShan:2014}). Roughly, this is accomplished by adding three combinators to an applicative categorial grammar: \bsf{lift} turns any expression into a function on its linguistic context, or \emph{continuation}; \bsf{scope} combines two scope-takers to yield a third; and \bsf{triv} is a trivial scope argument used to conclude derivations and delimit a context of evaluation.%
 
-	Though CCCGs offer robust accounts of in-scope binding (ibid.), the treatment of dynamic binding (i.e.~cross-sentential and donkey anaphora) proposed in \citealt{BarkerShan:2008} over-generates (\citealt{Charlow:2010}; see \citealt{BarkerShan:2014} for in-depth discussion). The related theory of \citealt{Groote:2006} (which relies on continuations, but is not a CCG), while treating dynamic binding, does not offer a general account of scope-taking. Both \citealt{BarkerShan:2008} and \citealt{Groote:2006} treat dynamic binding by indefinites, but not by expressions such as \emph{exactly one linguist}, which differs in important ways (cf.~\citealt{KampReyle:1993}). %
+	Though CCCGs offer robust accounts of in-scope binding (ibid.), the treatment of dynamic binding (i.e.~cross-sentential and donkey anaphora) proposed in \citealt{BarkerShan:2008} over-generates (\citealt{Charlow:2010}; see \citealt{BarkerShan:2014} for in-depth discussion). Conversely, the related theory of \citealt{Groote:2006} (which relies on continuations, but is not a CCG), while treating dynamic binding, does not offer a general account of scope-taking. In addition, both \citealt{BarkerShan:2008} and \citealt{Groote:2006} treat dynamic binding by indefinites, but not by expressions such as \emph{exactly one linguist}, which differs in important ways (cf.~\citealt{KampReyle:1993}). %
 	
 	%Three combinators, \bsf{lift}, \bsf{triv}, and \bsf{scope}, form the backbone of the grammar, allowing scope-takers to interact with their linguistic context. In addition, a \bsf{bind} shifter is introduced to facilitate quantificational binding. \citealt{Groote:2001}.%
 	
-	This paper presents an explicit CCCG account of dynamic binding which relies on the category-theoretic notion of a monad (e.g.~\citealt{Moggi:1989, Wadler:1992, Wadler:1994, Wadler:1995, Shan:2002}). Monads are a device for enriching a purely applicative grammar with \emph{side effects} (\citealt{Shan:2005}). Specifically, I propose replacing the \bsf{lift} and \bsf{triv} of CCCGs with monadic combinators that countenance side effects.%
+	This paper presents an explicit CCCG account of dynamic binding inspired by the category-theoretic notion of a monad (e.g.~\citealt{Moggi:1989, Wadler:1992, Wadler:1994, Wadler:1995, Shan:2002}). Monads are a device for enriching a purely applicative grammar with \emph{side effects}---roughly, things that happen in the course of semantic composition besides functional application on values (\citealt{Shan:2005}). Concretely, a monad determines a pair of combinators \ab{\eta,\,\star}. I propose replacing the \bsf{lift} and \bsf{triv} of CCCGs, respectively, with $\eta$ and $\star$. This has the automatic effect of producing a CCCG that countenances side effects.%
 	
-	 Any side effects regime can be grafted onto a continuized CCG, by replacing \bsf{lift} and \bsf{triv} with monadic functors. I provide a general technique for integrating a monadic approach to side effects with continuations-based approaches to scope in CCG. We relate our approach to the ContT monad transformer (\citealt{Liangetal}). Offers a type-theoretic way to track effects, integrate them into a well-developed CCG framework for scope-taking. I illustrate with a single in-depth case study, the case of dynamic binding. This involves find a monad for state and nondeterminism, positing some lexical entries, and \emph{nothing else}.%
+	 Any side effects regime can be grafted onto a continuized CCG in this way. I provide a general technique for integrating a monadic approach to side effects with continuations-based approaches to scope in CCG. We relate our approach to the ContT monad transformer (\citealt{Liangetal}). Offers a type-theoretic way to track effects, integrate them into a well-developed CCG framework for scope-taking. I illustrate with a single in-depth case study, the case of dynamic binding. This involves find a monad for state and nondeterminism, positing some lexical entries, and \emph{nothing else}.%
 	
 	Therefore, these results are of interest both for the categorial grammarian interested in donkey anaphora and scope-taking, as well as more generally. Any side-effects regime a semanticist thinks is motivated can be accommodated along these lines. Further, because of the inherent modularity, adding side effects necessitates neither fiddling with the basic compositional machinery, nor messing with lexical items which don't exploit side effects.%
 	
@@ -153,26 +153,26 @@
 		%	Successive applications of $\eta$, $\star$.
 		%\end{proof}
 	\end{fact}
-	\begin{fact}
-		\[\begin{array}{l}
-			\text{Left Identity: }\eta\,x \star k = k\,x
+	\begin{fact}[Monad laws]For any monad \ab{\textsf{M},\,\eta,\,\star}:
+		\[\begin{array}{l@{}r@{}l}
+			\text{Left Identity: }&\eta\,x \star k &{}= k\,x
 			\\
-			\text{Right Identity: }m \star \eta = m
+			\text{Right Identity: }&m \star \eta &{}= m
 			\\
-			\text{Associativity: }(m \star k) \star c = m \star \lambda x.\,k\,x \star c
+			\text{Associativity: }&(m \star k) \star c &{}= m \star \lambda x.\,k\,x \star c%
 		\end{array}\]
 	\end{fact}
 %\end{sec}
 
 \section{Finding the dynamic monad}
 %\begin{sec}
-	Dynamic semantics is (\citealt{Shan:2001}):\footnote{NB: does not characterize all varieties of dynamic semantics. Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Dekker:1993, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.}%
+	Dynamic semantics is (\citealt{Shan:2001}):\footnote{Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Dekker:1993, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.}%
 	%\begin{sec}
 		State: ability to manipulate the discourse context, i.e.~create discourse referents. %
 		Nondeterminism: analogizes indefinites to referential expressions. Treats indefinites as referring expressions, though ones which refer indeterminately.%
 	%\end{sec}
 	
-	The meat of PLA (\citealt{Dekker:1994}), translated into a compositional framework: sentences denote relations on sequences. Non-empty relations correspond to truth. Non-functional pairs in the relation correspond to nondeterminism introduced by indefinites (and perhaps disjunction). Conjunction corresponds to relation composition, which pipes the sequences output by the left conjunct to the right conjunct.%
+	The meat of dynamic semantics (\citealt{Heim:1982, Kamp:1981, GroenendijkStokhof:1991, Dekker:1994}): sentences denote relations on sequences. Non-empty relations correspond to truth. Non-functional pairs in the relation correspond to nondeterminism introduced by indefinites (and perhaps disjunction). Conjunction corresponds to relation composition, which pipes the sequences output by the left conjunct to the right conjunct.%
 	\[\begin{array}{r@{}l}
 		\sv{\text{a linguist}} &{}= \lambda ki.\displaystyle\bigcup_{\mathclap{x\in\,\textsf{ling}}}k\,x\,(i + x)%
 		\\
