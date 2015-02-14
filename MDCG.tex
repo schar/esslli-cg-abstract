@@ -42,7 +42,9 @@
 	Standard continuized grammar is, simplifying somewhat, three combinators: \bsf{lift}, \bsf{triv}, and \bsf{scope}. Figure \ref{fig1}. %
 	
 	Continuized type constructor. Agnostic about directionality. Combined with direction-sensitive mode of combination. See below. $\textsf{K}\,a\,r$ is a meaning which functions as something of type $a$ in a context of type $r$ (the `result type'). For example, extensional generalized quantifiers have type $\textsf{K}\,e\,t$.%
-	\[\textsf{K}\,a\,r \Coloneqq (a \ra r) \ra r\]
+	\begin{defi}%
+		$\textsf{K}\,a\,r \Coloneqq r/(r/a)$
+	\end{defi}
 	\begin{figure*}
 		{\small\[\begin{array}{@{}c@{}}
 		\begin{array}{c@{\hspace{2em}}c@{\hspace{2em}}c@{\hspace{2em}}c}%
@@ -72,13 +74,13 @@
 				\pruf{%
 				\AXC{}
 				\lab{\bsf{triv}}
-				\UIC{$\varepsilon \vdash \lambda x.\,x : a \ra a$}
+				\UIC{$\varepsilon \vdash \lambda x.\,x : a/a$}
 				}
 				&
 				\pruf{%
 				\AXC{}
 				\lab{\bsf{lift}}
-				\UIC{$\varepsilon \vdash \lambda xk.\,k\,x:  a \ra \textsf{K}\,a\,r$}%
+				\UIC{$\varepsilon \vdash \lambda xk.\,k\,x: (\textsf{K}\,a\,r) / a$}%
 				}
 		\end{array}
 		\\[-1em]
@@ -115,13 +117,13 @@
 				\pruf{%
 				\AXC{}
 				\lab{$\eta$}
-				\UIC{$\varepsilon \vdash \eta : a \ra \textsf{M}\,a$}
+				\UIC{$\varepsilon \vdash \eta : \textsf{M}\,a/a$}
 				}
 				&
 				\pruf{%
 				\AXC{}
 				\lab{$\star$}
-				\UIC{$\varepsilon \vdash (\star) :  \textsf{M}\,a \ra \textsf{K}\,a\,\textsf{M}\,r$}%
+				\UIC{$\varepsilon \vdash (\star) : (\textsf{K}\,a\,\textsf{M}\,r) / \textsf{M}\,a$}%
 				}
 		\end{array}
 		\\[-1em]
@@ -137,8 +139,8 @@
 
 \section{Adding side effects}
 %\begin{sec}
-	Continuized grammars can be readily extended with side effects. Adding side effects (\citealt{Wadler:1994, Liangetal}): monads. A monad is a triple \ab{\textsf{M},\,\eta,\,\star} of a type constructor \textsf{M}, an injection function $\eta$ of type $a \ra \textsf{M}\,a$ (given any type $a$), and a recipe for sequencing programs $\star$, of type $\textsf{M}\,a \ra (a \ra \textsf{M}\,b) \ra \textsf{M}\,b$ (given any types $a,b$). The monadic functors $\eta$ and $\star$ are required to satisfy the following three \emph{monad laws}, which ensure that $\eta\,x$ represents a \emph{trivial} injection of $x$ into the monad (left and right unit), and that order of evaluation, but not relative embedding, matters for program sequencing (associativity): %
-	\begin{fact}[Monad laws]%
+	Continuized grammars can be readily extended with side effects. Adding side effects (\citealt{Wadler:1994, Liangetal}): monads. A monad is a triple \ab{\textsf{M},\,\eta,\,\star} of a type constructor \textsf{M}, a polymorphic injection function $\eta$ of type $a \ra \textsf{M}\,a$, and a polymorphic sequencing $\star$, of type $\textsf{M}\,a \ra (a \ra \textsf{M}\,b) \ra \textsf{M}\,b$ (given any types $a,b$). The monadic functors $\eta$ and $\star$ are required to satisfy the following three \emph{monad laws}, which ensure that $\eta\,x$ represents a \emph{trivial} injection of $x$ into the monad (left and right unit), and that order of evaluation, but not relative embedding, matters for program sequencing. (associativity): %
+	\begin{defi}%
 		For any monad \ab{\textsf{M},\,\eta,\,\star}:
 		\[\begin{array}{l@{}r@{}l}
 			\text{Left unit: }&\eta\,x \star k &{}= k\,x
@@ -147,11 +149,9 @@
 			\\
 			\text{Associativity: }&(m \star k) \star c &{}= m \star \lambda x.\,k\,x \star c%
 		\end{array}\]
-	\end{fact}
+	\end{defi}
 	
-	The key to connecting monads with continuations is realizing that the type of $(\star)$ can be rewritten using the continuized type constructor as $\textsf{M}\,a \ra \textsf{K}\,a\,\textsf{M}\,b$%
-
-	Relating monads to continuized grammars: identify \bsf{lift} with $\star$, \bsf{triv} with $\eta$. But \bsf{scope} stays the same.%	
+	The key to connecting monads with continuations is realizing that the type of $(\star)$ can be rewritten using the continuized type constructor as $\textsf{M}\,a \ra \textsf{K}\,a\,\textsf{M}\,b$. Identify \bsf{lift} with $\star$, \bsf{triv} with $\eta$. But \bsf{scope} stays the same.%	
 	
 	Regular lifting is a theorem, though the types are further specified. For any monad \ab{\textsf{M},\,\eta,\,\star} and any result type $r$:%
 	\begin{fact}
@@ -161,22 +161,26 @@
 		%\end{proof}
 	\end{fact}
 	
-	Figure \ref{fig2}.
+	Figure \ref{fig2}, where we simply imbue the $\ra$ with directionality. 
+	\begin{fact}%
+		$\begin{array}[t]{@{}r@{}l@{}}
+			\bsf{S}\,((\star)\,m)\,&((\star)\,n)\,\eta 
+			\\
+			&{}= m \star \lambda f.\,n \star \lambda x.\,\eta\,(f\,x)%
+			\\
+		\end{array}$%
+	\end{fact}
 %\end{sec}
 
 \section{Finding the dynamic monad}
 %\begin{sec}
-	Dynamic semantics is (\citealt{Shan:2001}):\footnote{Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Dekker:1993, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.}%
-	%\begin{sec}
-		State: ability to manipulate the discourse context, i.e.~create discourse referents. %
-		Nondeterminism: analogizes indefinites to referential expressions. Treats indefinites as referring expressions, though ones which refer indeterminately.%
-	%\end{sec}
+	Dynamic semantics is (\citealt{Shan:2001}):\footnote{Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Dekker:1993, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.} State: ability to manipulate the discourse context, i.e.~create discourse referents. Nondeterminism: analogizes indefinites to referential expressions. Treats indefinites as referring expressions, though ones which refer indeterminately.%
 	
 	The meat of dynamic semantics (\citealt{Heim:1982, Kamp:1981, GroenendijkStokhof:1991, Dekker:1994}): sentences denote relations on sequences. Non-empty relations correspond to truth. Non-functional pairs in the relation correspond to nondeterminism introduced by indefinites (and perhaps disjunction). Conjunction corresponds to relation composition, which pipes the sequences output by the left conjunct to the right conjunct.%
 	\[\begin{array}{r@{}l}
-		\sv{\text{a linguist}} &{}= \lambda ki.\displaystyle\bigcup_{\mathclap{x\in\,\textsf{ling}}}k\,x\,(i + x)%
+		\sv{\text{someone}} &{}= \lambda ki.\displaystyle\bigcup_{\mathclap{x\in\,\textsf{person}}}k\,x\,(i + x)%
 		\\
-		\sv{\text{a linguist left}} &{}= \lambda i.\,\{i + x : x \in \textsf{ling} \wedge x \in \textsf{left}\}%
+		\sv{\text{someone left}} &{}= \lambda i.\,\{i + x : x \in \textsf{person} \wedge x \in \textsf{left}\}%
 	\end{array}\]%
 
 	Two key bits: state modification for introducing drefs, nondeterminism to allow for failure and referring treatment of indefinites. A different perspective on this: treating nondeterminism and state modification as side effects, within a functional programming setting for side effects. %
@@ -259,13 +263,13 @@
 %\end{sec}
 
 \section{Examples}
-%\begin{sec}	
-	Cross-sentential anaphora. Let us assume that \emph{scope islands}, e.g., tensed clauses, need to be evaluated---i.e., lowered (cf.~\citealt{Barker:2002, BarkerShan:2008}). In practice, this means a tensed clause must pass through a stage where it denotes something of type $\textsf{M}\,t$. There are a variety of options for enforcing this syntactically, but here we concentrate on the semantic upshots of forced evaluation.\footnote{In terms of LF, forcing evaluation of a scope island corresponds to disallowing QR out of the scope island.} the indefinite's side effects influence the evaluation of the second clause, even as the indefinite scopes within its clause. %
-	\[\begin{array}{r}
-		\bsf{so.left} \star \lambda p.\,\bsf{he.tired} \star \lambda q.\,\eta\,(p \wedge q)%
-		\\
-		= \bsf{so} \star \lambda x.\,\eta\,(\textsf{left}\,x \wedge \textsf{tired}\,x)%
-	\end{array}\]
+%\begin{sec}
+	Cross-sentential anaphora. Let us assume that \emph{scope islands}, e.g., tensed clauses, need to be evaluated---i.e., lowered (cf.~\citealt{Barker:2002, BarkerShan:2008}). In practice, this means a tensed clause must pass through a stage where it denotes something of type $\textsf{M}\,t$. There are a variety of options for enforcing this syntactically, but here we concentrate on the semantic upshots of forced evaluation.\footnote{In terms of LF, forcing evaluation of a scope island corresponds to disallowing QR out of the scope island.} the indefinite's side effects influence the evaluation of the second clause, even as the indefinite scopes within its clause. See Figure \ref{fig:derivation}.%
+%	\[\begin{array}{r}
+%		\bsf{so.left} \star \lambda p.\,\bsf{he.tired} \star \lambda q.\,\eta\,(p \wedge q)%
+%		\\
+%		= \bsf{so} \star \lambda x.\,\eta\,(\textsf{left}\,x \wedge \textsf{tired}\,x)%
+%	\end{array}\]
 	\begin{figure*}
 		%\begin{saveboxes}
 		\newsavebox{\partbox}\setbox\partbox=\hbox{\scriptsize\pruf{%
