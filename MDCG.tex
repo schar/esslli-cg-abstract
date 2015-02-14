@@ -19,17 +19,17 @@
 \begin{document}
 %\maketitle
 
-\section{Outline}
+\section{Overview}
 %\begin{sec}
-	\textbf{C}ontinuized \textbf{C}ombinatory \textbf{C}ategorial \textbf{G}rammars bring scope-takers such as quantificational DPs into the compositional fold by allowing any expression to take scope (e.g.~\citealt{ShanBarker:2006, BarkerShan:2008, BarkerShan:2014}). Roughly, this is accomplished by adding three combinators to an applicative categorial grammar: \bsf{lift} turns any expression into a function on its linguistic context, or \emph{continuation}; \bsf{scope} combines two scope-takers to yield a third; and \bsf{triv} is a trivial scope argument used to conclude derivations and delimit a context of evaluation.%
+	\textbf{C}ontinuized \textbf{C}ombinatory \textbf{C}ategorial \textbf{G}rammars bring scope-takers such as quantificational DPs into the compositional fold by allowing any expression to take scope (e.g.~\citealt{ShanBarker:2006, BarkerShan:2008, BarkerShan:2014}). This is accomplished by adding three combinators to an applicative categorial grammar: \bsf{lift} turns any expression into a function on its linguistic context, or \emph{continuation}; \bsf{scope} combines two scope-takers to yield a composite third; and \bsf{triv} is a trivial continuation used to conclude derivations and delimit a context of evaluation.%
 
 	Though CCCGs offer robust accounts of in-scope binding (ibid.), the treatment of dynamic binding (i.e.~cross-sentential and donkey anaphora) proposed in \citealt{BarkerShan:2008} over-generates (\citealt{Charlow:2010}; see \citealt{BarkerShan:2014} for in-depth discussion). Conversely, the related theory of \citealt{Groote:2006} (which relies on continuations, but is not a CCG), while treating dynamic binding, does not offer a general account of scope-taking. In addition, both \citealt{BarkerShan:2008} and \citealt{Groote:2006} treat dynamic binding by indefinites, but not by expressions such as \emph{exactly one linguist}, which differs in important ways (cf.~\citealt{KampReyle:1993}). %
 	
 	%Three combinators, \bsf{lift}, \bsf{triv}, and \bsf{scope}, form the backbone of the grammar, allowing scope-takers to interact with their linguistic context. In addition, a \bsf{bind} shifter is introduced to facilitate quantificational binding. \citealt{Groote:2001}.%
 	
-	This paper presents an explicit CCCG account of dynamic binding inspired by the category-theoretic notion of a monad (e.g.~\citealt{Moggi:1989, Wadler:1992, Wadler:1994, Wadler:1995, Shan:2002}). Monads are a device for enriching a purely applicative grammar with \emph{side effects}---roughly, things that happen in the course of semantic composition besides functional application on values (\citealt{Shan:2005}). Concretely, a monad determines a pair of combinators \ab{\eta,\,\star}. I propose replacing the \bsf{lift} and \bsf{triv} of CCCGs, respectively, with $\eta$ and $\star$. This has the automatic effect of producing a CCCG that countenances side effects.%
+	This paper presents an explicit CCCG account of dynamic binding inspired by the computer science notion of a \emph{monad} (e.g.~\citealt{Moggi:1989, Wadler:1992, Wadler:1994, Wadler:1995, Shan:2002}). Monads were developed as an abstraction for structuring extensions to the pure lambda calculus; they enable us to modularly enrich a programming language or natural language grammar with \emph{side effects} (cf.~\citealt{Shan:2005}). It is proposed that dynamic binding can be captured by recognizing two kinds of linguistic side effects: \textbf{state} and \textbf{nondeterminism}. State corresponds to the ability to introduce discourse referents, while nondeterminism means the ability to track multiple computations in parallel, which facilitates a referential treatment of indefinite expressions. %
 	
-	 Any side effects regime can be grafted onto a continuized CCG in this way. I provide a general technique for integrating a monadic approach to side effects with continuations-based approaches to scope in CCG. We relate our approach to the ContT monad transformer (\citealt{Liangetal}). Offers a type-theoretic way to track effects, integrate them into a well-developed CCG framework for scope-taking. I illustrate with a single in-depth case study, the case of dynamic binding. This involves find a monad for state and nondeterminism, positing some lexical entries, and \emph{nothing else}.%
+	Concretely, a monad determines a pair of combinators \ab{\eta,\,\star}. Our proposal can be summed up thus: replacing the \bsf{lift} and \bsf{triv} of CCCGs, respectively, with $\eta$ and $\star$. Combined with some intuitive lexical entries, this has the automatic effect of producing a CCCG that countenances side effects. Any side effects regime can be grafted onto a continuized CCG in this way. I provide a general technique for integrating a monadic approach to side effects with continuations-based approaches to scope in CCG. We relate our approach to the ContT monad transformer (\citealt{Liangetal}). Offers a type-theoretic way to track effects, integrate them into a well-developed CCG framework for scope-taking. I illustrate with a single in-depth case study, the case of dynamic binding. This involves find a monad for state and nondeterminism, positing some lexical entries, and \emph{nothing else}.%
 	
 	Therefore, these results are of interest both for the categorial grammarian interested in donkey anaphora and scope-taking, as well as more generally. Any side-effects regime a semanticist thinks is motivated can be accommodated along these lines. Further, because of the inherent modularity, adding side effects necessitates neither fiddling with the basic compositional machinery, nor messing with lexical items which don't exploit side effects.%
 	
@@ -38,11 +38,7 @@
 
 \section{Continuations}
 %\begin{sec}
-	Figure \ref{fig1}.
-%\end{sec}
 
-\section{Adding side effects}
-%\begin{sec}
 	Standard continuized grammar is, simplifying somewhat, three combinators: \bsf{lift}, \bsf{triv}, and \bsf{scope}. Figure \ref{fig1}. %
 	
 	Continuized type constructor. Agnostic about directionality. Combined with direction-sensitive mode of combination. See below. $\textsf{K}\,a\,r$ is a meaning which functions as something of type $a$ in a context of type $r$ (the `result type'). For example, extensional generalized quantifiers have type $\textsf{K}\,e\,t$.%
@@ -135,12 +131,23 @@
 	\end{figure*}
 	%
 	Type-theoretic details here. Dylan: I am not entirely sure the type system makes sense. What I'm after: something basically along the lines of \citealt{ShanBarker:2006}, where combinators apply to combinators. Interesting property of that system: they use Lift to allow them only one Scope combinator (i.e.~the thing on the left can always be the functor). Central question: the proper way to relate the continuations mode slashes with the direct mode slashes. The way I did it in my diss appendix was essentially to have a unimodal grammar, but a more elegant solution would be welcome (and important since this is after all a categorial grammar conference!). %
-	
-	Adding side effects (\citealt{Wadler:1994, Wadler:1995, Shan:2002}): monads. A monad is a triple \ab{\textsf{M},\,\eta,\,\star} of a type constructor \textsf{M}, an injection function $\eta$ of type $a \ra \textsf{M}\,a$ (given any type $a$), and a recipe for sequencing $\star$ of type $\textsf{M}\,a \ra (a \ra \textsf{M}\,b) \ra \textsf{M}\,b$ (given any types $a,b$). %
-	
-	Monad laws / punting
-	\begin{defi}
-	\end{defi}
+
+	Figure \ref{fig1}.
+%\end{sec}
+
+\section{Adding side effects}
+%\begin{sec}
+	Continuized grammars can be readily extended with side effects. Adding side effects (\citealt{Wadler:1994, Liangetal}): monads. A monad is a triple \ab{\textsf{M},\,\eta,\,\star} of a type constructor \textsf{M}, an injection function $\eta$ of type $a \ra \textsf{M}\,a$ (given any type $a$), and a recipe for sequencing programs $\star$, of type $\textsf{M}\,a \ra (a \ra \textsf{M}\,b) \ra \textsf{M}\,b$ (given any types $a,b$). The monadic functors $\eta$ and $\star$ are required to satisfy the following three \emph{monad laws}, which ensure that $\eta\,x$ represents a \emph{trivial} injection of $x$ into the monad (left and right unit), and that order of evaluation, but not relative embedding, matters for program sequencing (associativity): %
+	\begin{fact}[Monad laws]%
+		For any monad \ab{\textsf{M},\,\eta,\,\star}:
+		\[\begin{array}{l@{}r@{}l}
+			\text{Left unit: }&\eta\,x \star k &{}= k\,x
+			\\
+			\text{Right unit: }&m \star \eta &{}= m
+			\\
+			\text{Associativity: }&(m \star k) \star c &{}= m \star \lambda x.\,k\,x \star c%
+		\end{array}\]
+	\end{fact}
 	
 	The key to connecting monads with continuations is realizing that the type of $(\star)$ can be rewritten using the continuized type constructor as $\textsf{M}\,a \ra \textsf{K}\,a\,\textsf{M}\,b$%
 
@@ -153,15 +160,8 @@
 		%	Successive applications of $\eta$, $\star$.
 		%\end{proof}
 	\end{fact}
-	\begin{fact}[Monad laws]For any monad \ab{\textsf{M},\,\eta,\,\star}:
-		\[\begin{array}{l@{}r@{}l}
-			\text{Left Identity: }&\eta\,x \star k &{}= k\,x
-			\\
-			\text{Right Identity: }&m \star \eta &{}= m
-			\\
-			\text{Associativity: }&(m \star k) \star c &{}= m \star \lambda x.\,k\,x \star c%
-		\end{array}\]
-	\end{fact}
+	
+	Figure \ref{fig2}.
 %\end{sec}
 
 \section{Finding the dynamic monad}
