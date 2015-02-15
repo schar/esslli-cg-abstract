@@ -114,7 +114,7 @@
 	\newcommand{\BIBand}{\&}
 	\setlength{\bibsep}{0pt}
 	\setlength{\bibhang}{0.25in}
-	\bibliographystyle{sp}
+	\bibliographystyle{bqhatevwr}
     \newcommand{\posscitet}[1]{\citeauthor{#1}'s (\citeyear{#1})}
     \newcommand{\possciteauthor}[1]{\citeauthor{#1}'s}
     \newcommand{\pgposscitet}[2]{\citeauthor{#1}'s (\citeyear{#1}:~#2)}
@@ -151,7 +151,7 @@
 \fi
 \RequirePackage{graphicx}
 \RequirePackage{float}
-\RequirePackage[hang,FIGBOTCAP,loose]{subfigure}
+% \RequirePackage[hang,FIGBOTCAP,loose]{subfigure}
 
 %=====================================================================
 %============================= metadata ==============================
@@ -267,7 +267,7 @@
 \splogo
 \AtBeginDocument{\firstpagefinalheadings}
 \else            
-\nosplogo
+% \nosplogo
 \AtBeginDocument{\thispagestyle{plain}} 
 \fi
 

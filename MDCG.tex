@@ -3,8 +3,14 @@
 \usepackage{etex,amsmath,mathtools,newtxtext,newtxmath,expex,natbib,tikz-qtree,bookmark,tree-dvips}%
 \usepackage[margin=1in]{geometry}
 \usepackage{bussproofs}\EnableBpAbbreviations
+\usepackage{caption}
+\usepackage{subcaption}
 \newcommand{\pruf}[1]{\def\ScoreOverhang{0pt}\def\defaultHypSeparation{\hskip .25em}#1\DisplayProof}%
 \newcommand{\lab}[1]{\RightLabel{\scriptsize #1}}
+\newcommand{\pt}{\hspace{1pt}}
+\newcommand{\ppt}{\hspace{2pt}}
+\newcommand{\dt}{\pt.\ppt}
+\renewcommand{\ra}{\ensuremath{\shortrightarrow}}
 \usepackage{enumitem}
 \setlist[itemize]{leftmargin=0pt}
 \def\labelitemi{} 
@@ -21,126 +27,143 @@
 
 \section{Overview}
 %\begin{sec}
-	\textbf{C}ontinuized \textbf{C}ombinatory \textbf{C}ategorial \textbf{G}rammars bring scope-takers such as quantificational DPs into the compositional fold by allowing any expression to take scope (e.g.~\citealt{ShanBarker:2006, BarkerShan:2008, BarkerShan:2014}). This is accomplished by adding three combinators to an applicative categorial grammar: \bsf{lift} turns any expression into a function on its linguistic context, or \emph{continuation}; \bsf{scope} combines two scope-takers to yield a composite third; and \bsf{triv} is a trivial continuation used to conclude derivations and delimit a context of evaluation.%
-
-	Though CCCGs offer robust accounts of in-scope binding (ibid.), the treatment of dynamic binding (i.e.~cross-sentential and donkey anaphora) proposed in \citealt{BarkerShan:2008} over-generates (\citealt{Charlow:2010}; see \citealt{BarkerShan:2014} for in-depth discussion). Conversely, the related theory of \citealt{Groote:2006} (which relies on continuations, but is not a CCG), while treating dynamic binding, does not offer a general account of scope-taking. In addition, both \citealt{BarkerShan:2008} and \citealt{Groote:2006} treat dynamic binding by indefinites, but not by expressions such as \emph{exactly one linguist}, which differs in important ways (cf.~\citealt{KampReyle:1993}). %
+\textbf{C}ontinuized \textbf{C}ombinatory \textbf{C}ategorial \textbf{G}rammars supplement traditional applicative categorial grammars with a small number of combinators that allow expressions to take scope over their compositional contexts \citep[e.g.][]{ShanBarker:2006, BarkerShan:2008, BarkerShan:2014}. Though CCCGs offer robust accounts of in-scope binding (ibid.), the treatment of dynamic binding (i.e. cross-sentential and donkey anaphora) proposed in \citealt{BarkerShan:2008} overgenerates (\citealt{Charlow:2010}; see \citealt{BarkerShan:2014} for in-depth discussion). Conversely, the related theory of \citealt{Groote:2006} (which relies on continuations, but is not a CCG) handles dynamic binding elegantly, but does not offer any general account of scope-taking. In addition, both \citealt{BarkerShan:2008} and \citealt{Groote:2006} analyze dynamic binding by indefinites, but not by expressions such as \emph{exactly one linguist}, which differs in important ways \citep[cf.][]{KampReyle:1993}. %
 	
-	%Three combinators, \bsf{lift}, \bsf{triv}, and \bsf{scope}, form the backbone of the grammar, allowing scope-takers to interact with their linguistic context. In addition, a \bsf{bind} shifter is introduced to facilitate quantificational binding. \citealt{Groote:2001}.%
+This paper presents an explicit CCCG account of dynamic binding inspired by the computer science notion of a \emph{monad} \citep[e.g.][]{Moggi:1989, Wadler:1992, Wadler:1994, Wadler:1995, Shan:2002}. Monads were developed as an abstraction for structuring extensions to the pure lambda calculus; they enable us to modularly enrich a programming language or natural language grammar with \emph{side effects} \citep[cf.][]{Shan:2005}. It is proposed that dynamic binding can be captured by recognizing two kinds of linguistic side effects: \textbf{state} and \textbf{nondeterminism}. State corresponds to the ability to introduce discourse referents, while nondeterminism means the ability to track multiple computations in parallel, which facilitates a referential treatment of indefinite expressions. %
 	
-	This paper presents an explicit CCCG account of dynamic binding inspired by the computer science notion of a \emph{monad} (e.g.~\citealt{Moggi:1989, Wadler:1992, Wadler:1994, Wadler:1995, Shan:2002}). Monads were developed as an abstraction for structuring extensions to the pure lambda calculus; they enable us to modularly enrich a programming language or natural language grammar with \emph{side effects} (cf.~\citealt{Shan:2005}). It is proposed that dynamic binding can be captured by recognizing two kinds of linguistic side effects: \textbf{state} and \textbf{nondeterminism}. State corresponds to the ability to introduce discourse referents, while nondeterminism means the ability to track multiple computations in parallel, which facilitates a referential treatment of indefinite expressions. %
-	
-	Concretely, a monad determines a pair of combinators \ab{\eta,\,\star}. Our proposal can be summed up thus: replacing the \bsf{lift} and \bsf{triv} of CCCGs, respectively, with $\eta$ and $\star$. Combined with some intuitive lexical entries, this has the automatic effect of producing a CCCG that countenances side effects. Any side effects regime can be grafted onto a continuized CCG in this way. I provide a general technique for integrating a monadic approach to side effects with continuations-based approaches to scope in CCG. We relate our approach to the ContT monad transformer (\citealt{Liangetal}). Offers a type-theoretic way to track effects, integrate them into a well-developed CCG framework for scope-taking. I illustrate with a single in-depth case study, the case of dynamic binding. This involves find a monad for state and nondeterminism, positing some lexical entries, and \emph{nothing else}.%
-	
-	Therefore, these results are of interest both for the categorial grammarian interested in donkey anaphora and scope-taking, as well as more generally. Any side-effects regime a semanticist thinks is motivated can be accommodated along these lines. Further, because of the inherent modularity, adding side effects necessitates neither fiddling with the basic compositional machinery, nor messing with lexical items which don't exploit side effects.%
-	
-	The standard continuations-based perspective of \citealt{Barker:2002, ShanBarker:2006, BarkerShan:2014} is an instantiation of a more general perspective.%
+	Concretely, a monad determines a pair of combinators \ab{\eta,\,\star}, one for wrapping values inside trivially effectful structures, and another for composing programs with potential side effects. Our proposal is to replace the standard lifting and lowering operations of CCCGs, with $\star$ and $\eta$, respectively. Combined with some intuitive lexical entries, this has the automatic effect of producing a CCCG that countenances side effects. We show that any system of effects can be grafted onto a continuized CCG in this way, and illustrate with a single in-depth case study, the case of dynamic binding. Crucially, given the underlying continuation-based scaffolding, the problem of integrating well-motivated combinatorial approaches to scope with insights from dynamic semantics reduces to finding a monad for state and nondeterminism.
+  
+  Again, any sufficiently ``well-behaved'' (see Section~5) regime of semantic enrichment (e.g. focus-sensitivity, alternative-generation, intensionality) may be accommodated along similar lines. Furthermore, because of the inherent modularity of the monadic approach, various side effects may be added or removed to the grammar without adjusting the basic compositional machinery or the lexical entries that are not sensitive to the effects in question. Therefore, we expect these results will be of interest for natural language semanticists of many stripes, in addition to categorial grammarians working on donkey anaphora and/or scope-taking. 
 %\end{sec}
 
 \section{Continuations}
 %\begin{sec}
+  Simplifying somewhat, we take it that a standard CCCG consists of three overloaded combinators, \bsf{lift}, \bsf{triv}, and \bsf{scope}, in addition to the basic categorial slashes that encode forward and backward function application. These combinators are defined in Figure~\ref{fig1}. The inference rules make use of a polymorphic type constructor $\textsf{K}$ that is parameterized by two concrete types. Intuitively, expressions with type $\textsf{K}\,a\,r$ behave like things of type $a$ within compositional contexts of type $r$ (the `result type') of the computation. For example, extensional generalized quantifiers have type $\textsf{K}\,e\,t$, since they behave locally as individuals but quantify over constituents of type $t$.  Formally, $\textsf{K}\,a\,r \equiv (a \ra r) \ra r$, where $\alpha \ra \beta$ types a (direction-insensitive) function from type $\alpha$ to type $\beta$. The $(a \ra r)$ argument to something of type $\textsf{K}\,a\,r$ is called its \emph{continuation}, and represents the denotation of its context.
 
-	Standard continuized grammar is, simplifying somewhat, three combinators: \bsf{lift}, \bsf{triv}, and \bsf{scope}. Figure \ref{fig1}. %
-	
-	Continuized type constructor. Agnostic about directionality. Combined with direction-sensitive mode of combination. See below. $\textsf{K}\,a\,r$ is a meaning which functions as something of type $a$ in a context of type $r$ (the `result type'). For example, extensional generalized quantifiers have type $\textsf{K}\,e\,t$.%
-	\begin{defi}%
-		$\textsf{K}\,a\,r \Coloneqq r/(r/a)$
-	\end{defi}
-	\begin{figure*}
-		{\small\[\begin{array}{@{}c@{}}
-		\begin{array}{c@{\hspace{2em}}c@{\hspace{2em}}c@{\hspace{2em}}c}%
-			\pruf{%
-			\AXC{$\Gamma \vdash f : b/a~~$}
-			\AXC{$~~\Delta \vdash e : a$}
-			\lab{$/$}
-			\BIC{$\Gamma \cdot \Delta \vdash f\,e : b$}
-			}
-			&
-			\pruf{%
-			\AXC{$\Delta \vdash e : a~~$}
-			\AXC{$~~\Gamma \vdash f : a \backslash b$}
-			\lab{$\backslash$}
-			\BIC{$\Delta \cdot \Gamma \vdash f\,e : b$}
-			}
-			&
-			\pruf{%
-			\AXC{$\Delta \vdash m : \textsf{K}\,(b/a)\,r~~$}
-			\AXC{$~~\Gamma \vdash n : \textsf{K}\,a\,r$}
-			\lab{$\sslash$}
-			\BIC{$\Delta \cdot \Gamma \vdash \bsf{S}\,m\,n : \textsf{K}\,b\,r$}
-			}
-		\end{array}
-		\\\\
-		\begin{array}{c@{\hspace{2em}}c}
-				\pruf{%
-				\AXC{}
-				\lab{\bsf{triv}}
-				\UIC{$\varepsilon \vdash \lambda x.\,x : a/a$}
-				}
-				&
-				\pruf{%
-				\AXC{}
-				\lab{\bsf{lift}}
-				\UIC{$\varepsilon \vdash \lambda xk.\,k\,x: (\textsf{K}\,a\,r) / a$}%
-				}
-		\end{array}
-		\\[-1em]
-		\end{array}\]}
+  \bsf{lift} turns any expression into a function of its \emph{continuation}. It is a polymorphic generalization of the familiar lifting procedure that converts individuals to GQs. At the heart of a CCCG, \bsf{scope} defines the compositional process whereby two continuized expressions are combined, giving the left scope over the right. Finally, \bsf{triv} is a trivial continuation used to delimit contexts of evaluation and expose underlying semantic values. \citealt{ShanBarker:2006} show that these three operations suffice to derive inverse scope, and as a corollary, backward function composition. 
+
+\begin{figure*}
+  \small
+  \begin{subfigure}[b]{\textwidth}
+    \[%
+      \begin{array}{@{}c@{}}
+        \begin{array}{c@{\hspace{2em}}c}
+          \pruf{%
+            \AXC{$\Gamma \vdash f : b/a~~$}
+            \AXC{$~~\Delta \vdash e : a$}
+            \lab{$/$}
+            \BIC{$\Gamma \cdot \Delta \vdash f\,e : b$}
+          }
+          &
+          \pruf{%
+            \AXC{$\Delta \vdash e : a~~$}
+            \AXC{$~~\Gamma \vdash f : a \backslash b$}
+            \lab{$\backslash$}
+            \BIC{$\Delta \cdot \Gamma \vdash f\,e : b$}
+          }
+        \end{array}
+        \\\\
+        \begin{array}{c@{\hspace{2em}}c@{\hspace{2em}}c@{\hspace{2em}}c}%
+          \pruf{%
+            \AXC{}
+            \lab{\bsf{triv}}
+            \UIC{$\varepsilon \vdash \lambda x.\,x : a \ra a$}
+          }
+          &
+          \pruf{%
+            \AXC{}
+            \lab{\bsf{lift}}
+            \UIC{$\varepsilon \vdash \lambda xk.\,k\,x:  a / \textsf{K}\,a\,r$}%
+          }
+          &
+          \pruf{%
+            \AXC{}
+            \lab{\bsf{scope}}
+            \UIC{%
+              $\varepsilon \vdash \bsf{S} :
+              (\textsf{K}\,b\,r / \textsf{K}\,a\,r) / \textsf{K}\,(b/a)\,r$
+            }
+            % \AXC{$\Delta \vdash m : \textsf{K}\,(b/a)\,r~~$}
+            % \AXC{$~~\Gamma \vdash n : \textsf{K}\,a\,r$}
+            % \lab{$\sslash$}
+            % \BIC{$\Delta \cdot \Gamma \vdash \bsf{S}\,m\,n : \textsf{K}\,b\,r$}
+          }
+        \end{array}
+        \\[-1em]
+      \end{array}
+    \]
 		\caption{Continuized CCG without side effects, fixing a result type $r$.}%
 		\label{fig1}
-	\end{figure*}
-	\begin{figure*}
-		{\small\[\begin{array}{c}
-		\begin{array}{c@{\hspace{2em}}c@{\hspace{2em}}c@{\hspace{2em}}c}%
-			\pruf{%
-			\AXC{$\Gamma \vdash f : b/a~~$}
-			\AXC{$~~\Delta \vdash e : a$}
-			\lab{$/$}
-			\BIC{$\Gamma \cdot \Delta \vdash f\,e : b$}
-			}
-			&
-			\pruf{%
-			\AXC{$\Delta \vdash e : a~~$}
-			\AXC{$~~\Gamma \vdash f : a \backslash b$}
-			\lab{$\backslash$}
-			\BIC{$\Delta \cdot \Gamma \vdash f\,e : b$}
-			}
-			&
-			\pruf{%
-			\AXC{$\Delta \vdash m : \textsf{K}\,(b/a)\,r~~$}
-			\AXC{$~~\Gamma \vdash n : \textsf{K}\,a\,r$}
-			\lab{$\sslash$}
-			\BIC{$\Delta \cdot \Gamma \vdash \bsf{S}\,m\,n : \textsf{K}\,b\,r$}
-			}
-		\end{array}
-		\\\\
-		\begin{array}{c@{\hspace{2em}}c}
-				\pruf{%
-				\AXC{}
-				\lab{$\eta$}
-				\UIC{$\varepsilon \vdash \eta : \textsf{M}\,a/a$}
-				}
-				&
-				\pruf{%
-				\AXC{}
-				\lab{$\star$}
-				\UIC{$\varepsilon \vdash (\star) : (\textsf{K}\,a\,\textsf{M}\,r) / \textsf{M}\,a$}%
-				}
-		\end{array}
-		\\[-1em]
-		\end{array}\]}
-		\caption{Continuized CCG with side effects, fixing a monad \ab{\textsf{M},\,\eta,\,\star} and a result type $r$.}%
-		\label{fig2}
-	\end{figure*}
-	%
-	Type-theoretic details here. Dylan: I am not entirely sure the type system makes sense. What I'm after: something basically along the lines of \citealt{ShanBarker:2006}, where combinators apply to combinators. Interesting property of that system: they use Lift to allow them only one Scope combinator (i.e.~the thing on the left can always be the functor). Central question: the proper way to relate the continuations mode slashes with the direct mode slashes. The way I did it in my diss appendix was essentially to have a unimodal grammar, but a more elegant solution would be welcome (and important since this is after all a categorial grammar conference!). %
+  \end{subfigure} \\[1em]
+  \begin{subfigure}[b]{\textwidth}
+    \[
+      \begin{array}{c}
+        \begin{array}{c@{\hspace{2em}}c}
+          \pruf{%
+          \AXC{$\Gamma \vdash f : b/a~~$}
+          \AXC{$~~\Delta \vdash e : a$}
+          \lab{$/$}
+          \BIC{$\Gamma \cdot \Delta \vdash f\,e : b$}
+          }
+          &
+          \pruf{%
+          \AXC{$\Delta \vdash e : a~~$}
+          \AXC{$~~\Gamma \vdash f : a \backslash b$}
+          \lab{$\backslash$}
+          \BIC{$\Delta \cdot \Gamma \vdash f\,e : b$}
+          }
+        \end{array}
+        \\\\
+        \begin{array}{c@{\hspace{2em}}c@{\hspace{2em}}c@{\hspace{2em}}c}%
+          \pruf{%
+          \AXC{}
+          \lab{$\eta$}
+          \UIC{$\varepsilon \vdash \eta : \textsf{M}\,a / a$}
+          }
+          &
+          \pruf{%
+          \AXC{}
+          \lab{$\star$}
+          \UIC{%
+            $\varepsilon \vdash (\star) :
+            \textsf{K}\,a\,\textsf{M}\,r / \textsf{M}\,a$
+          }
+          }
+          &
+          \pruf{%
+          \AXC{}
+          \lab{\bsf{scope}}
+          \UIC{%
+            $\varepsilon \vdash \bsf{S} :
+            (\textsf{K}\,b\,r / \textsf{K}\,a\,r) / \textsf{K}\,(b/a)\,r$
+          }
+          % \AXC{$\Delta \vdash m : \textsf{K}\,(b/a)\,r~~$}
+          % \AXC{$~~\Gamma \vdash n : \textsf{K}\,a\,r$}
+          % \lab{$\sslash$}
+          % \BIC{$\Delta \cdot \Gamma \vdash \bsf{S}\,m\,n : \textsf{K}\,b\,r$}
+          }
+        \end{array}
+        \\[-1em]
+      \end{array}
+    \]
+    \caption{Continuized CCG with side effects, fixing a monad \ab{\textsf{M},\,\eta,\,\star} and a result type $r$.}%
+    \label{fig2}
+	\end{subfigure}
+  \caption{%
+    Continuized CCGs with and without side effects, for a fixed result type
+    $r$ and monad \ab{\textsf{M},\,\eta,\,\star}. In both grammars, $\bsf{S}
+    \equiv \lambda mm'k \dt m\,(\lambda f \dt m'\,(\lambda x \dt k\,(f\,x)))$.
+  }
+\end{figure*}
 
-	Figure \ref{fig1}.
 %\end{sec}
 
 \section{Adding side effects}
 %\begin{sec}
-	Continuized grammars can be readily extended with side effects. Adding side effects (\citealt{Wadler:1994, Liangetal}): monads. A monad is a triple \ab{\textsf{M},\,\eta,\,\star} of a type constructor \textsf{M}, a polymorphic injection function $\eta$ of type $a \ra \textsf{M}\,a$, and a polymorphic sequencing $\star$, of type $\textsf{M}\,a \ra (a \ra \textsf{M}\,b) \ra \textsf{M}\,b$ (given any types $a,b$). The monadic functors $\eta$ and $\star$ are required to satisfy the following three \emph{monad laws}, which ensure that $\eta\,x$ represents a \emph{trivial} injection of $x$ into the monad (left and right unit), and that order of evaluation, but not relative embedding, matters for program sequencing. (associativity): %
-	\begin{defi}%
+  One nice property of continuized grammars is that they do not place any restrictions on the type of the return value, i.e., the type of the context. For simple cases where only scope-taking is at-issue, we can use type $t$, the type of sentences, over which quantificational operators typically scope. But in general, we may be interested in contexts that denote in richer semantic spaces, as is typically the case with questions, focus-bearing constituents, attitude reports, dynamic updates, etc. In such cases, we enrich the return type to match the phenomenon of interest.%
+
+  We propose to model the sorts of semantic enrichments motivated by these phenomena using monads (\citealt{Wadler:1994, Liangetal}), which serve much the same purpose in capturing the semantics of programming language \emph{side effects} like IO\@. A monad is a triple \ab{\textsf{M},\,\eta,\,\star} of a type constructor \textsf{M}, an injection function $\eta$ of type $a \ra \textsf{M}\,a$ (given any type $a$), and a recipe for sequencing programs $\star$, of type $\textsf{M}\,a \ra (a \ra \textsf{M}\,b) \ra \textsf{M}\,b$ (given any types $a,b$). The monadic functors $\eta$ and $\star$ are required to satisfy the following three \emph{monad laws}, which ensure that $\eta\,x$ represents a \emph{trivial} injection of $x$ into the monad (left and right unit), and that order of evaluation, but not relative embedding, matters for program sequencing (a form of associativity): %
+	\begin{defi}[Monad laws]%
 		For any monad \ab{\textsf{M},\,\eta,\,\star}:
 		\[\begin{array}{l@{}r@{}l}
 			\text{Left unit: }&\eta\,x \star k &{}= k\,x
@@ -151,17 +174,15 @@
 		\end{array}\]
 	\end{defi}
 	
-	The key to connecting monads with continuations is realizing that the type of $(\star)$ can be rewritten using the continuized type constructor as $\textsf{M}\,a \ra \textsf{K}\,a\,\textsf{M}\,b$. Identify \bsf{lift} with $\star$, \bsf{triv} with $\eta$. But \bsf{scope} stays the same.%	
+  Monads provide an elegant bridge between side effects and continuations, because the type of $(\star)$ is equivalent to $\textsf{M}\,a \ra \textsf{K}\,a\,(\textsf{M}\,b)$. The bind function is thus itself a means of lifting effectful programs into continuized programs. Similarly, the unit function doubles as a default continuation, always available to be passed in to $\textsf{K}\,a\,(\textsf{M}\,b)$ programs without generating any new side effects. In this way, we can construct continuized grammars directly from monads by trading in \bsf{lift} for $\star$ and \bsf{triv} for $\eta$. Conveniently, because \bsf{scope} operates at the level of already continuized programs, it doesn't change.%	
 	
-	Regular lifting is a theorem, though the types are further specified. For any monad \ab{\textsf{M},\,\eta,\,\star} and any result type $r$:%
-	\begin{fact}
-		$\Gamma \vdash x : a \Rightarrow \Gamma \vdash \lambda k.\,k\,x : \textsf{K}\,a\,\textsf{M}\,r$%
+  In fact, \bsf{lift} is a theorem of any monadic grammar, when we restrict the result type to $\textsf{M}\,r$. Generally, for any monad \ab{\textsf{M},\,\eta,\,\star} and result type $r$:%
+	\begin{fact}%
+    $\Gamma \vdash x : a \Rightarrow \Gamma \vdash \lambda k.\,k\,x : \textsf{K}\,a\,(\textsf{M}\,r)$%
 		%\begin{proof}
 		%	Successive applications of $\eta$, $\star$.
 		%\end{proof}
 	\end{fact}
-	
-	Figure \ref{fig2}, where we simply imbue the $\ra$ with directionality. 
 	\begin{fact}%
 		$\begin{array}[t]{@{}r@{}l@{}}
 			\bsf{S}\,((\star)\,m)\,&((\star)\,n)\,\eta 
@@ -174,22 +195,25 @@
 
 \section{Finding the dynamic monad}
 %\begin{sec}
-	Dynamic semantics is (\citealt{Shan:2001}):\footnote{Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Dekker:1993, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.} State: ability to manipulate the discourse context, i.e.~create discourse referents. Nondeterminism: analogizes indefinites to referential expressions. Treats indefinites as referring expressions, though ones which refer indeterminately.%
+  We treat dynamic semantics as a case study for the monadic approach. Following \citet{Shan:2001}, we characterize dynamic systems as those that recognize some forms of mutable state and nondeterminism. The former provides a mechanism by which expressions can manipulate the discourse context, usually through the introduction of discourse referents. The latter guarantees that indefinites are handled on a par with referential expressions, but whose referents are generated ``randomly''.%
+  \footnote{Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Dekker:1993, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.}%
 	
-	The meat of dynamic semantics (\citealt{Heim:1982, Kamp:1981, GroenendijkStokhof:1991, Dekker:1994}): sentences denote relations on sequences. Non-empty relations correspond to truth. Non-functional pairs in the relation correspond to nondeterminism introduced by indefinites (and perhaps disjunction). Conjunction corresponds to relation composition, which pipes the sequences output by the left conjunct to the right conjunct.%
-	\[\begin{array}{r@{}l}
-		\sv{\text{someone}} &{}= \lambda ki.\displaystyle\bigcup_{\mathclap{x\in\,\textsf{person}}}k\,x\,(i + x)%
+  In classic formulations of dynamic semantics (\citealt{Heim:1982, Kamp:1981, GroenendijkStokhof:1991, Dekker:1994}), sentences denote relations on sequences. Non-empty relations correspond to truthful updates. Indefinites (and perhaps disjunctions) generate nonfunctional (in our terms, ``nondeterministic'') relations, with inputs matched against multiple outputs. Sentential conjunction amounts to relation composition, which pipes the sequences output by the left conjunct pointwise into the right.%
+  \begin{align}%
+    \label{eq:classic-indef}%
+		\sv{\text{someone}} &= \lambda ki.\displaystyle\bigcup_{\mathclap{x\in\,\textsf{person}}}k\,x\,(i + x)%
 		\\
-		\sv{\text{someone left}} &{}= \lambda i.\,\{i + x : x \in \textsf{person} \wedge x \in \textsf{left}\}%
-	\end{array}\]%
+		\sv{\text{someone left}} &= \lambda i.\,\{i + x : x \in \textsf{person} \wedge x \in \textsf{left}\}%
+    \notag
+  \end{align}%
 
-	Two key bits: state modification for introducing drefs, nondeterminism to allow for failure and referring treatment of indefinites. A different perspective on this: treating nondeterminism and state modification as side effects, within a functional programming setting for side effects. %
+  The denotations in (\ref{eq:classic-indef}) illustrate the way in which the standard dynamic approach puts state and nondeterminism are put front and center. Sentences are in fact \emph{nothing but} nondeterministic modifications of state; even truth and falsity are derivative notions. Borrowing from the functional programming literature, we advocate a different perspective: treating nondeterminism and state modification as \emph{side effects}, associated with semantic values, rather than replacing them. 
 	
-	Monad for state (generalization of monad for environment-sensitivity). Assume that $\gamma$ is the type of ``contexts of evaluation''. For our purposes, we might think of $\gamma$ as inhabited by \emph{sequences of discourse referents}.%
+  Here is the standard monad for state manipulation. Assume that $\gamma$ is the type of ``evaluation contexts''. For our purposes, we set $\gamma$ equal to the type of discourse referent sequences.%
 	\begin{defi}[The State monad]\label{state}
 		\[\begin{array}[t]
 			{@{}l@{}c@{}l@{}}
-			\textsf{M}\,a &{}\Coloneqq{} &\gamma \ra a \times \gamma	%
+			\textsf{M}\,a &{}\Coloneqq{} &\gamma \ra a \ast \gamma	%
 			\\
 			\eta\,x &{}\ceq{} &\lambda i.\,\ab{x,\,i}
 			\\
@@ -197,7 +221,7 @@
 		\end{array}\]
 	\end{defi}
 	
-	Given our identification of $\gamma$ with the set of sequences of discourse referents, a natural operation to suppose as associated with dref introduction is sequence extension (cf.~\citealt{Groote:2006, Unger:2012, Charlow:diss}). These definitions rely on the notion of extending a sequence (e.g., if $i \ceq abcd$, $i+e = abcde$) and retrieving the last, i.e.~most topical, discourse reference (e.g., if $i \ceq abcde$, $i_\top = e$).\footnote{This is an extremely crude measure of topicality, but it will suffice to illustrate the main points.}%
+  To keep things simple, we model dref introduction as sequence extension \citep[cf.][]{Groote:2006, Unger:2012, Charlow:diss}, and dref retrieval as sequence projection. Again, for simplicity we assume a single projection function $\cdot_\top$ that picks out the most topical referent (for concreteness, the last).
 	\begin{defi}[Dref introduction]
 		\[m^\rhd \ceq m \star \lambda xi.\,\ab{x,\,i + x}\]
 	\end{defi}
