@@ -1,6 +1,6 @@
 %\begin{pre}
 \documentclass[11pt,twocolumn,a4paper]{bqhatevwr}
-\usepackage{etex,amsmath,mathtools,newtxtext,newtxmath,expex,natbib,tikz-qtree,bookmark,tree-dvips}%
+\usepackage{etex,amsmath,mathtools,newtxtext,newtxmath,expex,natbib,tikz-qtree,bookmark,tree-dvips,fancyhdr}%
 \usepackage[margin=1in]{geometry}
 \usepackage{bussproofs}\EnableBpAbbreviations
 \usepackage{wasysym}
@@ -26,9 +26,15 @@
 \setlength{\belowdisplayskip}{3pt}
 \setlength{\abovedisplayshortskip}{0pt}
 \setlength{\belowdisplayshortskip}{0pt}
+\fancyhead{} % clear all header fields
+\fancyhead[RO,RE]{\bsf{\large Monadic dynamic semantics: side effects and scope}}
+\fancyfoot{} % clear all footer fields
+\fancyfoot[CO,CE]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
 %\end{pre}
 \begin{document}
-
+\thispagestyle{fancy}
 %\maketitle
 
 \section{Overview}
