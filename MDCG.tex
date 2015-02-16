@@ -23,6 +23,11 @@
 \title{Monadic dynamic semantics}
 %\end{pre}
 \begin{document}
+\setlength{\abovedisplayskip}{3pt}
+\setlength{\belowdisplayskip}{3pt}
+\setlength{\abovedisplayshortskip}{0pt}
+\setlength{\belowdisplayshortskip}{0pt}
+
 %\maketitle
 
 \section{Overview}
@@ -282,12 +287,37 @@
 
 \section{Examples}
 %\begin{sec}
-	Cross-sentential anaphora. Let us assume that \emph{scope islands}, e.g., tensed clauses, need to be evaluated---i.e., lowered (cf.~\citealt{Barker:2002, BarkerShan:2008}). In practice, this means a tensed clause must pass through a stage where it denotes something of type $\textsf{M}\,t$. There are a variety of options for enforcing this syntactically, but here we concentrate on the semantic upshots of forced evaluation.\footnote{In terms of LF, forcing evaluation of a scope island corresponds to disallowing QR out of the scope island.} the indefinite's side effects influence the evaluation of the second clause, even as the indefinite scopes within its clause. See Figure \ref{fig:derivation}.%
-%	\[\begin{array}{r}
-%		\bsf{so.left} \star \lambda p.\,\bsf{he.tired} \star \lambda q.\,\eta\,(p \wedge q)%
-%		\\
-%		= \bsf{so} \star \lambda x.\,\eta\,(\textsf{left}\,x \wedge \textsf{tired}\,x)%
-%	\end{array}\]
+  Figure~\ref{fig:lexicon} defines a small lexicon tailored for a CCCG built around the State-Set monad. We argue that this grammar offers a powerful vantage point for analyzing dynamic phenomena that interact with patterns of scope-taking.%
+  \begin{figure}
+    \vspace{-1em}
+    \begin{align*}
+      \bsf{john}    &\ceq \textsf{j}
+                    &
+      \bsf{so}      &\ceq \lambda i.\,\{\ab{x,\,i} \mid \textsf{person}\,x\}
+      \\
+      \bsf{left}    &\ceq \textsf{left}%
+                    &
+      \bsf{he}      &\ceq \lambda i.\,\{\ab{i_\top,\,i}\}%
+    \end{align*}
+    \vspace{-3em}
+    \begin{align*}
+      \bsf{not}     &\ceq \lambda mi.\left\{\ab{\neg\exists \pi \in m\,i.\,\pi_0,\,i}\right\}%
+      \\
+      \bsf{a}       &\ceq \lambda ci.\,\{\ab{x,\,i'} \mid \ab{\textsf{T},\,i'} \in c\,x\,i\}%
+      \\
+      \bsf{every}   &\ceq \lambda ck.\,\bsf{not}\,(\bsf{a}\,c \star \lambda x.\,\bsf{not}\,(k\,x))%
+      \\
+      \bsf{ev.ling} &\ceq \lambda k.\,\bsf{not}\,(\bsf{a.ling} \star \lambda x.\,\bsf{not}\,(k\,x))%
+      \\
+      \bsf{no.ling} &\ceq \lambda k.\,\bsf{not}\,(\bsf{a.ling} \star k)%	
+    \end{align*}
+    \vspace{-2em}
+		\caption{Lexicon for CCCG specialized to State-Set Monad}%
+    \label{fig:lexicon}%
+  \end{figure}%
+  
+  For instance, Figure~\ref{fig:derivation} provides a derivation of cross-sentential anaphora. One property of the derivation worth highlighting is that both clauses are evaluated, i.e. applied to the default $\eta$ continuation, before they are conjoined. This delimits the scope of quantificational operators in the clauses, including that of the indefinite in the first sentence. Nevertheless, the indefinite's side effect --- its introduction of a nondeterministic discourse referent --- lives on to influence the evaluation of the pronoun in the second conjunct.
+
 	\begin{figure*}
 		%\begin{saveboxes}
 		\newsavebox{\partbox}\setbox\partbox=\hbox{\scriptsize\pruf{%
@@ -341,21 +371,10 @@
 		\caption{Cross-sentential anaphora: deriving \emph{someone$_i$ left; he$_i$ was tired.}}%
 		\label{fig:derivation}}
 	\end{figure*}
-	
-	Negation. Requires there to be no true boolean value returned, tosses out any discourse referents generated in its scope. (Standard). Use to define dynamically closed meanings (e.g.~conditional, universal quantifier, etc.) %
-	\[\begin{array}{r@{}l}
-		\bsf{not}&{}\ceq \lambda ms.\left\{\ab{\neg\exists \pi \in m\,s.\,\pi_0,\,s}\right\}%
-		\\
-		\bsf{no.ling}&{}\ceq \lambda k.\,\bsf{not}\,(\bsf{a.ling} \star k)%	
-		\\
-		\bsf{ev.ling}&{}\ceq \lambda k.\,\bsf{not}\,(\bsf{a.ling} \star \lambda x.\,\bsf{not}\,(k\,x))%
-	\end{array}\]%
-	
-	Compare universals. After ending the derivation at the clause boundary, we're left with a pure computation. The universal's side effects have died on evaluation.%
-	\[\eta\,(\forall x.\,\textsf{ling}\,x \Rightarrow \textsf{left}\,x)\]
-	
-	Donkey anaphora works similarly. Take the following. The restrictor $c$ here acquires a kind of monadic scope, via $\star$, over the nuclear scope $k$. This means any side effects inside $c$ influence the context of evaluation for $k$. However, once $k$ is grabbed, the wide-scoping negation discharges side effects (as is standard in dynamic systems). %	
-	\[\bsf{every} \ceq \lambda ck.\,\bsf{not}\,(\bsf{a}\,c \star \lambda x.\,\bsf{not}\,(k\,x))\]%
+
+  Other operators, however, may \emph{quantify} over the nondeterminism of indefinites in their scope, gobbling up their side effects in the process. Negation is the classic example. As defined in Figure~\ref{fig:lexicon}, $\bsf{not}$ evaluates its prejacent, discards any discoure referents generated in the process, and then checks that none of the alternative updates resulted in true boolean values. As is standard in dynamic systems, we can use this state-capturing behavior to build up other dynamically closed meanings. For example, the universal quantifier defined in Figure~\ref{fig:lexicon} will display quite different behavior than the indefinite of Figure~\ref{fig:derivation} when evaluated at the clause boundary. Plugging in the unit continuation will do two things: (i) as before, it will close off the nuclear scope of the universal; but (ii) this time, we will be left with a pure (effect-free) computation, equivalent to $\eta\,(\forall x.\,\textsf{person}\,x \Rightarrow \textsf{left}\,x)$.
+
+  Importantly this does not preclude the possibility of donkey anaphora. Returning to the lexical entry for \bsf{every}, note that the restrictor $c$ here acquires a kind of monadic scope, via $\star$, over the nuclear scope $k$. This means that any side effects inside $c$ will influence the context of evaluation for $k$. However, as in other dynamic systems, the wide-scoping negation will discharge whatever side effects are accrued in the process. %
 %\end{sec}
 
 \section{Discussion}
