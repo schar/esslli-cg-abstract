@@ -408,7 +408,10 @@
 %=====================================================================
 %=========================== useful macros ===========================
 
-\newcommand{\spj}{\emph{S\&P}\xspace}
+\let\originalleft\left
+\let\originalright\right
+\renewcommand{\left}{\mathopen{}\mathclose\bgroup\originalleft}
+\renewcommand{\right}{\aftergroup\egroup\originalright}
 
 \def\co{\colon\thinspace}
 
