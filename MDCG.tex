@@ -3,6 +3,7 @@
 \usepackage{etex,amsmath,mathtools,newtxtext,newtxmath,expex,natbib,tikz-qtree,bookmark,tree-dvips}%
 \usepackage[margin=1in]{geometry}
 \usepackage{bussproofs}\EnableBpAbbreviations
+\usepackage{wasysym}
 \usepackage{caption}
 \usepackage{subcaption}
 \newcommand{\pruf}[1]{\def\ScoreOverhang{0pt}\def\defaultHypSeparation{\hskip .25em}#1\DisplayProof}%
@@ -220,54 +221,39 @@
 		\end{array}\]
 	\end{defi}
 	
-  To keep things simple, we model dref introduction as sequence extension \citep[cf.][]{Groote:2006, Unger:2012, Charlow:diss}, and dref retrieval as sequence projection. Again, for simplicity we assume a single projection function $\cdot_\top$ that picks out the most topical referent (for concreteness, the last).
+  To keep things simple, we model dref introduction as sequence extension \citep[cf.][]{Groote:2006, Unger:2012, Charlow:diss} and dref retrieval as sequence projection. To dynamically charge a monadic individual (of type $\textsf{M}\,e$), we pass the individual through a continuation that simply returns its underlying value and appends it to the output sequence (Definition~\ref{def:dref-intro}). For instance $(\eta\,\textsf{j})^\rhd \star \lambda xi.\,\ab{x,\,i+x} = \lambda i.\,\ab{\textsf{j},\,i+\textsf{j}}$.
+  
+  Again keeping things simple, we assume a single projection function $\cdot_\top$ that returns as its value the most topical referent (say, for concreteness, the last) in a sequence.
 	\begin{defi}[Dref introduction]
-		\[m^\rhd \ceq m \star \lambda xi.\,\ab{x,\,i + x}\]
+    \label{def:dref-intro}%
+    \[m^\rhd \ceq m \star \lambda x.\,\eta\,x\,(i+x)\]
 	\end{defi}
 	\begin{defi}[Dref retrieval]
 		\[\bsf{he} \ceq \lambda i.\,\ab{i_\top,\,i}\]
 	\end{defi}
 	
-	An example, \emph{Al left} (call this \bsf{X}):
+\noindent
+As an example, consider the sentence \emph{Al left} (call its denotation \bsf{X}). Al is first injected into the state monad with $\eta$, then shifted so as to introduce himself to the discourse record, then sequenced into a continuation representing his nuclear scope. The result is a function from states to truth if Al left and falsity if he didn't, paired with an updated state which now lists Al as a dref.
 	\[(\eta\,\textsf{a})^\rhd\! \star \lambda x.\,\eta\,(\textsf{left}\,x) = \lambda i.\,\ab{\textsf{left}\,\textsf{a},\,i+\textsf{a}}\]%
 	
-	Pronoun sentence \emph{he was tired} (call this \bsf{Y}):
+\noindent
+Obversely, the sentence \emph{he was tired} (call its denotation \bsf{Y}) reads in a discourse state, chooses the most topical referent in that state, and then returns the referent together with the original state, unmodified.
 	\[\bsf{he} \star \lambda x.\,\eta\,(\textsf{tired}\,x) = \lambda i.\,\ab{\textsf{tired}\,i_\top,\,i}\]%
 	
-	Sequencing the two. The dref introduced by the proper name in the first sentence is accessed by the pronoun in the second. %
+\noindent
+When we sequence the first sentence into the second, the dref introduced by the proper name is immediately picked up by the pronoun. 
+\vspace{-1.5em}
 	\[\begin{array}{r@{}l}
 		\bsf{X} \star \lambda p.\,\bsf{Y}&{}\star \lambda q.\,\eta\,(p \wedge q) %
 		\\
 		&{}= \lambda i.\,\ab{\textsf{left}\,\textsf{a} \wedge \textsf{tired}\,\textsf{a},\,i+\textsf{a}}%
 	\end{array}\]
 	
-	So we have state modification as a side effect. To say something about indefinites, i.e.~to allow them to refer and introduce drefs nondeterministically, we need to enrich the state monad with nondeterministic side effects. The monad for nondeterminism is the Set monad, given in Definition \ref{set}:%
-	\begin{defi}[The Set monad]\label{set}
+  Thus the State monad allows us to see discourse modification as a side effect of composition. However, to incorporate indefinites, which introduce drefs \emph{indeterminately}, we need to add a layer of nondeterminism to the basic State monad. This we do in Definition~\ref{stateset}, which lays out what we will call the State-Set monad.\footnote{Also known as the Parser monad \citep{HuttonMeijer}.}%
+	\begin{defi}[The State-Set monad]\label{stateset}
 		\[\begin{array}[t]
 			{@{}l@{}c@{}l@{}}
-			\textsf{M}\,a &{}\Coloneqq{} &a \ra t%
-			\\
-			\eta\,x &{}\ceq{} &\{x\}
-			\\
-			m \star k &{}\ceq{} &\displaystyle\bigcup_{\mathclap{x\in \,m}}k\,x%
-		\end{array}\]
-	\end{defi} 
-
-	Use StateT to stitch the two together. Given any monad ${\cal M}= \ab{\textsf{L},\,\eta_\textsf{L},\,\star_\textsf{L}}$, StateT is a recipe for building a new monad with which adds State-type functionality to ${\cal M}$:\footnote{Fn. about SetT}. Result also known as the Parser monad. \citealt{HuttonMeijer}%
-	\begin{defi}[The StateT monad transformer]\label{statet}
-		\[\begin{array}[t]
-			{@{}l@{}c@{}l@{}}
-			\textsf{M}\,a &{}\Coloneqq{} &\gamma \ra \textsf{L}\,(a \times \gamma)%
-			\\
-			\eta\,x &{}\ceq{} &\lambda i .\,\eta_\textsf{L}\,\ab{x,\,i}
-			\\
-			m \star k &{}\ceq{} &\lambda i.\, m\,i\star_\textsf{L} \lambda \pi.\,k\,\pi_0\,\pi_1%
-		\end{array}\]
-	\end{defi}
-	\begin{defi}[The State\_Set monad]\label{stateset}
-		\[\begin{array}[t]
-			{@{}l@{}c@{}l@{}}
-			\textsf{M}\,a &{}\Coloneqq{} &\gamma \ra (a \times \gamma) \ra t%
+			\textsf{M}\,a &{}\Coloneqq{} &\gamma \ra (a \ast \gamma) \ra t%
 			\\
 			\eta\,x &{}\ceq{} &\lambda i.\left\{\ab{x,\,i}\right\}
 			\\
@@ -275,14 +261,14 @@
 		\end{array}\]
 	\end{defi}
 
-	Static lexicon, dynamic lexicon
-	
-	Modular treatment of binding.%
-	\[\begin{array}{ll}
-		\text{Previous}:& \bsf{bind}\,m \ceq \lambda k.\,m\,(\lambda x.\,k\,x\,x)%
-		\\
-		\text{Proposal}:& \bsf{bind}\,m \ceq \lambda k.\,m\,(\lambda xi.\,k\,x\,(i + x))%
-	\end{array}\]
+  Monadic meanings are now functions from discourse states to \emph{sets} of values, tagged with potentially updated output states. Sequential combination still pipes the output state of one program in as input to another, but it now does so pointwise. In the next section, we will see how this provides a robust effects regime for modeling dynamic binding. Finally, to round out the formal fragment, we define a fourth combinator that shifts a State-Set monadic update into a dref-introducing update.
+  \[
+    \pruf{%
+      \AXC{\vphantom{f}}
+      \lab{$\RHD$}
+      \UIC{$\varepsilon \vdash \lambda mk.\,m\,(\lambda xi.\,k\,x\,(i+x)) : \textsf{M}\,e/\textsf{M}\,e$}
+    }
+  \]
 %\end{sec}
 
 \section{Examples}
@@ -318,13 +304,13 @@
   
   For instance, Figure~\ref{fig:derivation} provides a derivation of cross-sentential anaphora. One property of the derivation worth highlighting is that both clauses are evaluated, i.e. applied to the default $\eta$ continuation, before they are conjoined. This delimits the scope of quantificational operators in the clauses, including that of the indefinite in the first sentence. Nevertheless, the indefinite's side effect --- its introduction of a nondeterministic discourse referent --- lives on to influence the evaluation of the pronoun in the second conjunct.
 
-	\begin{figure*}
+  \begin{figure*}
 		%\begin{saveboxes}
 		\newsavebox{\partbox}\setbox\partbox=\hbox{\scriptsize\pruf{%
 				\AXC{$\bsf{so} : \textsf{M}\,e$}
 				\lab{$\star$}
 				\UIC{$\lambda k.\,\bsf{so} \star k : \textsf{K}\,e\,\textsf{M}\,t$}%
-				\lab{$\rhd$}
+				\lab{$\RHD$}
 				\UIC{$\lambda k.\,\bsf{so}^\rhd\! \star k : \textsf{K}\,e\,\textsf{M}\,t$}%
 				\AXC{$\textsf{left} : e \backslash t$}
 				\lab{$\uparrow$}
@@ -363,7 +349,7 @@
 			\BIC{$\lambda k.\,\bsf{so}^\rhd\! \star \lambda x.\,\bsf{he} \star \lambda y.\,k\,(\textsf{left}\,x \wedge \textsf{tired}\,y) : \textsf{K}\,t\,\textsf{M}\,t$}%
 			\lab{$\downarrow$}
 			\UIC{$\bsf{so}^\rhd\! \star \lambda x.\,\bsf{he} \star \lambda y.\,\eta\,(\textsf{left}\,x \wedge \textsf{tired}\,y) : \textsf{M}\,t$}%
-			\lab{equiv}
+			\lab{$\equiv$}
 			\UIC{$\bsf{so}^\rhd\! \star \lambda x.\,\eta\,(\textsf{left}\,x \wedge \textsf{tired}\,x) : \textsf{M}\,t$}%
 			}%
 			\\[-1em]
@@ -390,8 +376,6 @@
 	Again, any sufficiently ``well-behaved'' (see Section~\ref{?}) regime of semantic enrichment (e.g.~focus-sensitivity, alternative-generation, intensionality) may be accommodated along similar lines. Furthermore, because of the inherent modularity of the monadic approach, various side effects may be added to or subtracted from the grammar without adjusting the basic compositional machinery or the lexical entries that are not sensitive to the effects in question. Therefore, we expect these results will be of interest for natural language semanticists of many stripes, in addition to categorial grammarians working on donkey anaphora and/or scope-taking. % SC: moved here from S1
 	
 	Theory extends to scope islands, wide range of exceptional binding configurations \citealt{Charlow:diss}. Extends to pair-list phenomena, functional quantification: \citealt{Bumford:inc}. Crossover, superiority less clear (cf.~\citealt{ShanBarker:2006, BarkerShan:2008}). %
-	
-	Broader question: how this relates to the idea that continuations can simulate any monad (\citealt{Filinski:1994}). I don't understand this result well enough to say anything (Dylan?). %
 %\end{sec}
 
 {\small\bibliography{bqhatevwr}}
