@@ -22,12 +22,19 @@
   \spauthor{Simon Charlow \\ \institute{Rutgers}} \AND
 }
 \title{Monadic dynamic semantics}
-%\end{pre}
-\begin{document}
 \setlength{\abovedisplayskip}{3pt}
 \setlength{\belowdisplayskip}{3pt}
 \setlength{\abovedisplayshortskip}{0pt}
 \setlength{\belowdisplayshortskip}{0pt}
+%\end{pre}
+\begin{document}
+<<<<<<< Updated upstream
+\setlength{\abovedisplayskip}{3pt}
+\setlength{\belowdisplayskip}{3pt}
+\setlength{\abovedisplayshortskip}{0pt}
+\setlength{\belowdisplayshortskip}{0pt}
+=======
+>>>>>>> Stashed changes
 
 %\maketitle
 
@@ -42,7 +49,7 @@
 
 \section{Continuations}
 %\begin{sec}
-  Simplifying somewhat,\footnote{In particular, abstracting away from the multimodal presentation of \citealt{ShanBarker:2006, BarkerShan:2008, BarkerShan:2014}.}we take it that a standard CCCG consists of three polymorphic combinators, \bsf{Lift}, \bsf{Triv}, and \bsf{Scope}, in addition to the basic categorial slashes that encode forward and backward function application. These combinators are defined in Figure~\ref{fig1} (along with a characterization of the slashes' behavior). The inference rules make use of a type constructor $\textsf{K}$ parameterized by two concrete types. Formally, $\textsf{K}\,a\,r \Coloneqq r/(r/a)$; the $r/a$ argument to something of type $\textsf{K}\,a\,r$ is called its \emph{continuation}, and represents the denotation of its context. Intuitively, expressions with type $\textsf{K}\,a\,r$ behave like things of type $a$ within compositional contexts of type $r$ (the `result type') of the computation. For example, extensional generalized quantifiers have type $\textsf{K}\,e\,t$, since they behave locally as individuals but quantify over constituents of type $t$.%
+  Simplifying somewhat,\footnote{In particular, abstracting away from the multimodal presentation of \citealt{ShanBarker:2006, BarkerShan:2008, BarkerShan:2014}.}we take it that a standard CCCG consists of three polymorphic combinators, \bsf{Lift}, \bsf{Triv}, and \bsf{Scope}, in addition to the basic categorial slashes that encode forward and backward function application. These combinators are defined in Figure~\ref{fig1} (along with a characterization of the slashes' behavior). The inference rules make use of a type constructor $\textsf{K}$ parameterized by two concrete types. Formally, $\textsf{K}\,a\,r \Coloneqq r/(r/a)$; the $r/a$ argument to something of type $\textsf{K}\,a\,r$ is called its \emph{continuation}, and represents the denotation of its context. Intuitively, expressions with type $\textsf{K}\,a\,r$ behave like things of type $a$ within compositional contexts of type $r$, the `result type' of the computation. For example, extensional generalized quantifiers have type $\textsf{K}\,e\,t$, since they behave locally as individuals but quantify over constituents of type $t$.%
 
   As for combinators, \bsf{Lift} turns any expression into a function on its \emph{continuation}; it is a polymorphic generalization of the familiar lifting procedure that converts individuals to the corresponding principal ultrafilters (cf.~\citealt{Montague:1974}). \bsf{Scope} defines the compositional process whereby two continuized expressions are combined, giving the left scope over the right. Finally, \bsf{Triv} is a trivial continuation used to delimit contexts of evaluation and expose underlying semantic values. \citealt{ShanBarker:2006} show that these three operations suffice to derive cases of inverse scope (that is, where an expression scopes over something to its left).%
 \begin{figure*}
@@ -76,7 +83,7 @@
           \pruf{%
             \AXC{\vphantom{f}}
             \lab{\bsf{Lift}}
-            \UIC{$\varepsilon \vdash \lambda xk.\,k\,x:  a / \textsf{K}\,a\,r$}%
+            \UIC{$\varepsilon \vdash \lambda xk.\,k\,x: \textsf{K}\,a\,r / a$}%
           }
           &
           \pruf{%
@@ -160,10 +167,10 @@
 
 \section{Adding side effects}
 %\begin{sec}
-  Continuized grammars do not place inherent restrictions on $r$, the type of the context. For simple cases where only boolean scope-taking is at-issue (cf.~\citealt{BarwiseCooper:1981}), we can set $r \Coloneqq t$. But in general, we may be interested in contexts that denote in richer semantic spaces, as is typically the case with questions, focus, attitude reports, dynamic updates, etc. In such cases, we enrich the return type to match the phenomenon of interest. % YASS
+  Continuized grammars need not place inherent restrictions on $r$, the type of the context. For simple cases where only boolean scope-taking is at-issue (cf.~\citealt{BarwiseCooper:1981}), we can set $r \Coloneqq t$. But in general, we may be interested in contexts that denote in richer semantic spaces, as is typically the case with questions, focus, attitude reports, dynamic updates, etc. In such cases, we enrich the return type to match the phenomenon of interest. % YASS
 
   We propose to model the sorts of semantic enrichments motivated by these phenomena using monads (\citealt{Wadler:1994, Liangetal}), which serve much the same purpose in capturing the semantics of programming language \emph{side effects} like IO\@. A monad is a triple \ab{\textsf{M},\,\eta,\,\star} of a type constructor \textsf{M}, an injection function $\eta$ of type $a \ra \textsf{M}\,a$ (given any type $a$), and a recipe for sequencing programs $\star$, of type $\textsf{M}\,a \ra (a \ra \textsf{M}\,b) \ra \textsf{M}\,b$ (given any types $a,b$). The monadic functors $\eta$ and $\star$ are required to satisfy the following three \emph{monad laws}, which ensure that $\eta\,x$ represents a \emph{trivial} injection of $x$ into the monad (left and right unit), and that order of evaluation, but not relative embedding, matters for program sequencing (a form of associativity): %
-	\begin{defi}[Monad laws]%
+	\begin{defi}%
 		For any monad \ab{\textsf{M},\,\eta,\,\star}:
 		\[\begin{array}{l@{}r@{}l}
 			\text{Left unit: }&\eta\,x \star k &{}= k\,x
@@ -174,7 +181,7 @@
 		\end{array}\]
 	\end{defi}
 	
-  Monads provide an elegant bridge between side effects and continuations, because the type of $(\star)$ is equivalent to $\textsf{M}\,a \ra \textsf{K}\,a\,(\textsf{M}\,b)$. The bind function is thus itself a means of lifting effectful programs into continuized programs. Similarly, the unit function doubles as a default continuation, always available to be passed in to $\textsf{K}\,a\,(\textsf{M}\,b)$ programs without generating any new side effects. In this way, we can construct continuized grammars directly from monads by trading in \bsf{Lift} for $\star$ and \bsf{Triv} for $\eta$. Conveniently, because \bsf{Scope} operates at the level of already continuized programs, it doesn't change.%	
+  Monads provide an elegant bridge between side effects and continuations, because the type of $(\star)$ is equivalent to $\textsf{M}\,a \ra \textsf{K}\,a\,(\textsf{M}\,b)$. The bind function is thus itself a means of lifting effectful programs into continuized programs. Similarly, the unit function doubles as a default continuation, always available to be passed to $\textsf{K}\,a\,(\textsf{M}\,b)$ programs without generating any new side effects. In this way, we can construct continuized grammars directly from monads by trading in \bsf{Lift} for $\star$ and \bsf{Triv} for $\eta$. Conveniently, because \bsf{Scope} operates at the level of already continuized programs, it doesn't change.%	
 	
   In fact, \bsf{Lift} is a theorem of any monadic grammar, when we restrict the result type to $\textsf{M}\,r$. Generally, for any monad \ab{\textsf{M},\,\eta,\,\star} and result type $r$:%
 	\begin{fact}%
@@ -195,8 +202,7 @@
 
 \section{Finding the dynamic monad}
 %\begin{sec}
-  We treat dynamic semantics as a case study for the monadic approach. Following \citet{Shan:2001}, we characterize dynamic systems as those that recognize some forms of mutable state and nondeterminism. The former provides a mechanism by which expressions can manipulate the discourse context, usually through the introduction of discourse referents. The latter guarantees that indefinites are handled on a par with referential expressions, but whose referents are generated ``randomly''.%
-  \footnote{Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Dekker:1993, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.}%
+  We treat dynamic semantics as a case study for the monadic approach. Following \citet{Shan:2001}, we characterize dynamic systems as those that recognize some forms of mutable state and nondeterminism. The former provides a mechanism by which expressions can manipulate the discourse context, usually through the introduction of discourse referents. The latter guarantees that indefinites are handled on a par with referential expressions, but whose referents are generated ``randomly''.%\footnote{Dynamic treatments following \citealt{GroenendijkStokhof:1990} (e.g.~\citealt{Zimmermann:1991, Dekker:1993, Szabolcsi:2003, Groote:2006}) provide a way for indefinites to extend their binding domain but do not treat indefinites as nondeterministic analogs of proper names.}%
 	
   In classic formulations of dynamic semantics (\citealt{Heim:1982, Kamp:1981, GroenendijkStokhof:1991, Dekker:1994}), sentences denote relations on sequences. Non-empty relations correspond to truthful updates. Indefinites (and perhaps disjunctions) generate nonfunctional (in our terms, ``nondeterministic'') relations, with inputs matched against multiple outputs. Sentential conjunction amounts to relation composition, which pipes the sequences output by the left conjunct pointwise into the right.%
   \begin{align}%
@@ -276,7 +282,11 @@ When we sequence the first sentence into the second, the dref introduced by the 
   Figure~\ref{fig:lexicon} defines a small lexicon tailored for a CCCG built around the State-Set monad. We argue that this grammar offers a powerful vantage point for analyzing dynamic phenomena that interact with patterns of scope-taking.%
   \begin{figure}
     \vspace{-1em}
+<<<<<<< Updated upstream
     \begin{align*}
+=======
+    {\small\begin{align*}
+>>>>>>> Stashed changes
       \bsf{john}    &\ceq \textsf{j}
                     &
       \bsf{so}      &\ceq \lambda i.\,\{\ab{x,\,i} \mid \textsf{person}\,x\}
@@ -296,7 +306,11 @@ When we sequence the first sentence into the second, the dref introduced by the 
       \bsf{ev.ling} &\ceq \lambda k.\,\bsf{not}\,(\bsf{a.ling} \star \lambda x.\,\bsf{not}\,(k\,x))%
       \\
       \bsf{no.ling} &\ceq \lambda k.\,\bsf{not}\,(\bsf{a.ling} \star k)%	
+<<<<<<< Updated upstream
     \end{align*}
+=======
+    \end{align*}}
+>>>>>>> Stashed changes
     \vspace{-2em}
 		\caption{Lexicon for CCCG specialized to State-Set Monad}%
     \label{fig:lexicon}%
@@ -304,7 +318,11 @@ When we sequence the first sentence into the second, the dref introduced by the 
   
   For instance, Figure~\ref{fig:derivation} provides a derivation of cross-sentential anaphora. One property of the derivation worth highlighting is that both clauses are evaluated, i.e. applied to the default $\eta$ continuation, before they are conjoined. This delimits the scope of quantificational operators in the clauses, including that of the indefinite in the first sentence. Nevertheless, the indefinite's side effect --- its introduction of a nondeterministic discourse referent --- lives on to influence the evaluation of the pronoun in the second conjunct.
 
+<<<<<<< Updated upstream
   \begin{figure*}
+=======
+	\begin{figure*}
+>>>>>>> Stashed changes
 		%\begin{saveboxes}
 		\newsavebox{\partbox}\setbox\partbox=\hbox{\scriptsize\pruf{%
 				\AXC{$\bsf{so} : \textsf{M}\,e$}
